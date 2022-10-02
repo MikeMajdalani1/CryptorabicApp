@@ -1,21 +1,15 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../../components/ExploreContainer';
-import './academy.css';
+import { IonContent, IonHeader, IonPage } from "@ionic/react";
+import ExploreContainer from "../../components/ExploreContainer";
+import Header from "../../components/header/header";
+import "./academy.css";
 
 const Academy: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>
-          <IonTitle>Tab 2</IonTitle>
-        </IonToolbar>
+        <Header />
       </IonHeader>
-      <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Academy</IonTitle>
-          </IonToolbar>
-        </IonHeader>
+      <IonContent>
         <ExploreContainer name="Academy Page" />
       </IonContent>
     </IonPage>

@@ -1,0 +1,33 @@
+.profilecontainer {
+  width: 80%;
+  margin: 10px auto;
+}
+ion-avatar {
+  width: 170px;
+  height: 170px;
+}
+.center {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+.detailscontainer {
+  margin-top: 30px;
+  border-radius: 10px;
+  background-color: #17394b;
+  height: 500px;
+}
+
+.detailslist {
+  padding: 30px;
+}
+ion-label {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 13px;
+  letter-spacing: 2px;
+  text-transform: capitalize;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+}
