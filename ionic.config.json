@@ -1,5 +1,11 @@
 {
   "name": "cryptorabicapp",
   "integrations": {},
-  "type": "react"
+  "type": "react",
+  "proxies": [
+    {
+      "path": "/cryptopanic",
+      "proxyUrl": "https://cryptopanic.com/api/v1/posts/?auth_token=659545a65bf52c359f4da7c84f4ca95dc8e42693"
+    }
+  ]
 }

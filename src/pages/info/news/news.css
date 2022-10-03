@@ -1,0 +1,27 @@
+ion-card-title {
+  font-weight: 700;
+  font-family: "Titillium Web", "Open Sans", "sans-serif";
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: white;
+  padding: 20px 10px;
+}
+ion-card-content {
+  font-family: "Titillium Web", "Open Sans", "sans-serif";
+  font-size: 10px;
+  font-weight: 600;
+  color: #79bcfa;
+  opacity: 0.8;
+  line-height: 16px;
+  letter-spacing: 2px;
+  padding: 0 10px 20px 10px !important;
+}
+ion-card {
+  margin: 50px 20px;
+
+  box-shadow: 0 0 30px #286ab7;
+}
+.checknews {
+  color: white;
+  opacity: 0.8;
+}
