@@ -14,6 +14,11 @@ import Info from "./pages/info/info";
 import Academy from "./pages/academy/academy";
 import Chat from "./pages/chat/chat";
 import Profile from "./pages/profile/profile";
+import Signup from "./pages/authenticate/signup/signup";
+import Login from "./pages/authenticate/login/login";
+import Tabs from "./tabs";
+import { createContext } from "react";
+import { useState, useContext } from "react";
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
 
@@ -35,44 +40,38 @@ import "./theme/variables.css";
 
 setupIonicReact();
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonTabs>
-        <IonRouterOutlet>
-          <Route path="/info/">
-            <Info />
-          </Route>
-          <Route path="/academy">
-            <Academy />
-          </Route>
-          <Route path="/chat">
-            <Chat />
-          </Route>
-          <Route path="/profile">
-            <Profile />
-          </Route>
-          <Route exact path="/">
-            <Redirect to="/info/news" />
-          </Route>
-        </IonRouterOutlet>
-        <IonTabBar slot="bottom">
-          <IonTabButton tab="Info" href="/info/news">
-            <IonIcon icon={newspaper} />
-          </IonTabButton>
-          <IonTabButton tab="Academy" href="/academy">
-            <IonIcon icon={school} />
-          </IonTabButton>
-          <IonTabButton tab="Chat" href="/chat">
-            <IonIcon icon={chatbubbleEllipses} />
-          </IonTabButton>
-          <IonTabButton tab="Profile" href="/profile">
-            <IonIcon icon={person} />
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
-    </IonReactRouter>
-  </IonApp>
-);
+interface IUserManager {
+  setIsLoggedIn: Function;
+}
+
+const user: IUserManager = {
+  setIsLoggedIn: () => {},
+};
+
+export const UserContext = createContext<IUserManager>(user);
+
+const IonicApp: React.FC = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const user = useContext(UserContext);
+
+  user.setIsLoggedIn = setIsLoggedIn;
+
+  return (
+    <IonApp>
+      <IonReactRouter>
+        <Route path="/login" component={Login} exact={true} />
+        <Route path="/" component={isLoggedIn ? Tabs : Login} />
+      </IonReactRouter>
+    </IonApp>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <UserContext.Provider value={user}>
+      <IonicApp />
+    </UserContext.Provider>
+  );
+};
 
 export default App;

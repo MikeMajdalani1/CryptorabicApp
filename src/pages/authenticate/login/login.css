@@ -1,0 +1,62 @@
+.container {
+  padding: 0 40px;
+}
+
+h3 {
+  font-weight: 700;
+  font-family: "Titillium Web", "Open Sans", "sans-serif";
+  color: white;
+  letter-spacing: 0.2rem;
+  padding: 0 10px;
+  font-size: 30px;
+  margin: 0 !important;
+}
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  align-items: center;
+}
+.logoandtext {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  align-items: center;
+  gap: 20px;
+}
+.form {
+  width: 100%;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.border {
+  border: 2px solid #286ab7;
+}
+
+h4 {
+  font-family: "Titillium Web", "Open Sans", "sans-serif";
+  font-size: 10px;
+  font-weight: 600;
+  color: #79bcfa;
+  opacity: 0.8;
+  line-height: 16px;
+  letter-spacing: 2px;
+  margin: 0 !important;
+}
+.forgot {
+  font-size: 15px;
+  font-family: "Titillium Web", "Open Sans", "sans-serif";
+  text-decoration: underline;
+  font-weight: 600;
+  color: #79bcfa;
+  opacity: 0.8;
+  line-height: 16px;
+  letter-spacing: 2px;
+}
+.signup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
