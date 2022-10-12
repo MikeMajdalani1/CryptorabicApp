@@ -23,9 +23,23 @@ import { OverlayEventDetail } from '@ionic/core/components';
 
 const Login = () => {
   const user = useContext(UserContext);
+  const [inputs, setInputs] = useState({
+    username: '',
+    email: '',
+    phone: '',
+    password: '',
+  });
 
-  const loginClick = () => {
-    user.setIsLoggedIn(true);
+  const handleChange = (e) => {
+    console.log(e);
+  };
+  const handleLogin = () => {
+    console.log('login');
+  };
+  const handleRegister = () => {
+    console.log(inputs);
+    // user.setIsLoggedIn(true);
+    modal.current?.dismiss();
   };
 
   const modal = useRef();
@@ -55,27 +69,20 @@ const Login = () => {
         <form className="form">
           <IonItem className="border">
             <IonInput
-              name="email"
+              name="emailLogin"
               type="email"
               placeholder="Email"
-              required
             ></IonInput>
           </IonItem>
           <IonItem className="border">
             <IonInput
-              name="password"
+              name="passwordLogin"
               type="password"
               placeholder="Password"
-              required
             ></IonInput>
           </IonItem>
 
-          <IonButton
-            size="large"
-            type="submit"
-            onSubmit={loginClick}
-            expand="block"
-          >
+          <IonButton size="large" onClick={handleLogin} expand="block">
             Sign In
           </IonButton>
           <span className="forgot">Forgot password?</span>
@@ -102,37 +109,45 @@ const Login = () => {
         </IonHeader>
         <IonContent className="ion-padding">
           <IonItem>
-            <form className="form">
+            <div className="form">
               <IonItem className="border">
                 <IonInput
                   name="username"
                   type="username"
+                  value={inputs.username}
                   placeholder="Username"
                   required
+                  ionChange={handleChange}
                 ></IonInput>
               </IonItem>
               <IonItem className="border">
                 <IonInput
+                  value={inputs.email}
                   name="email"
                   type="email"
                   placeholder="Email"
                   required
+                  ionChange={handleChange}
                 ></IonInput>
               </IonItem>
               <IonItem className="border">
                 <IonInput
                   name="phone"
                   type="phone"
+                  value={inputs.phone}
                   placeholder="Phone Number"
                   required
+                  ionChange={handleChange}
                 ></IonInput>
               </IonItem>
               <IonItem className="border">
                 <IonInput
+                  value={inputs.password}
                   name="password"
                   type="password"
                   placeholder="Password"
                   required
+                  ionChange={handleChange}
                 ></IonInput>
               </IonItem>
               <IonItem className="border">
@@ -143,15 +158,10 @@ const Login = () => {
                   required
                 ></IonInput>
               </IonItem>
-              <IonButton
-                size="large"
-                type="submit"
-                onSubmit={loginClick}
-                expand="block"
-              >
+              <IonButton size="large" onClick={handleRegister} expand="block">
                 Sign up
               </IonButton>
-            </form>
+            </div>
           </IonItem>
           <IonLabel class="disclaimer">
             By creating an account you agree and accept our privacy policy
