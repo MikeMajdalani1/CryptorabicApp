@@ -12,14 +12,14 @@ import {
   IonTitle,
   IonPage,
   IonLabel,
-} from "@ionic/react";
-import { useContext, useState, useRef } from "react";
-import { UserContext } from "../../../App";
-import Signup from "../signup/signup";
-import "./login.css";
-import { Route } from "react-router-dom";
-import { IonReactRouter } from "@ionic/react-router";
-import { OverlayEventDetail } from "@ionic/core/components";
+} from '@ionic/react';
+import { useContext, useState, useRef } from 'react';
+import { UserContext } from '../../../App';
+import Signup from '../signup/signup';
+import './login.css';
+import { Route } from 'react-router-dom';
+import { IonReactRouter } from '@ionic/react-router';
+import { OverlayEventDetail } from '@ionic/core/components';
 
 const Login = () => {
   const user = useContext(UserContext);
@@ -32,15 +32,15 @@ const Login = () => {
   const input = useRef();
 
   const [message, setMessage] = useState(
-    "This modal example uses triggers to automatically open a modal when the button is clicked."
+    'This modal example uses triggers to automatically open a modal when the button is clicked.'
   );
 
   function confirm() {
-    modal.current?.dismiss(input.current?.value, "confirm");
+    modal.current?.dismiss(input.current?.value, 'confirm');
   }
 
   function onWillDismiss(ev) {
-    if (ev.detail.role === "confirm") {
+    if (ev.detail.role === 'confirm') {
       setMessage(`Hello, ${ev.detail.data}!`);
     }
   }
@@ -82,7 +82,7 @@ const Login = () => {
         </form>
 
         <div className="signup">
-          <h4> New to Cryptorabic?</h4>{" "}
+          <h4> New to Cryptorabic?</h4>{' '}
           <IonButton id="open-modal">Sign Up</IonButton>
         </div>
       </div>
@@ -98,19 +98,64 @@ const Login = () => {
                 Cancel
               </IonButton>
             </IonButtons>
-            <IonTitle>Welcome</IonTitle>
-            <IonButtons slot="end">
-              <IonButton strong={true} onClick={() => confirm()}>
-                Confirm
-              </IonButton>
-            </IonButtons>
           </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
           <IonItem>
-            <IonLabel position="stacked">Enter your name</IonLabel>
-            <IonInput ref={input} type="text" placeholder="Your name" />
+            <form className="form">
+              <IonItem className="border">
+                <IonInput
+                  name="username"
+                  type="username"
+                  placeholder="Username"
+                  required
+                ></IonInput>
+              </IonItem>
+              <IonItem className="border">
+                <IonInput
+                  name="email"
+                  type="email"
+                  placeholder="Email"
+                  required
+                ></IonInput>
+              </IonItem>
+              <IonItem className="border">
+                <IonInput
+                  name="phone"
+                  type="phone"
+                  placeholder="Phone Number"
+                  required
+                ></IonInput>
+              </IonItem>
+              <IonItem className="border">
+                <IonInput
+                  name="password"
+                  type="password"
+                  placeholder="Password"
+                  required
+                ></IonInput>
+              </IonItem>
+              <IonItem className="border">
+                <IonInput
+                  name="password"
+                  type="password"
+                  placeholder="Repeat Password"
+                  required
+                ></IonInput>
+              </IonItem>
+              <IonButton
+                size="large"
+                type="submit"
+                onSubmit={loginClick}
+                expand="block"
+              >
+                Sign up
+              </IonButton>
+            </form>
           </IonItem>
+          <IonLabel class="disclaimer">
+            By creating an account you agree and accept our privacy policy
+          </IonLabel>
         </IonContent>
       </IonModal>
     </div>
