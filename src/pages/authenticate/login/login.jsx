@@ -1,6 +1,4 @@
 import {
-  IonRow,
-  IonCol,
   IonItem,
   IonInput,
   IonButton,
@@ -13,33 +11,118 @@ import {
   IonPage,
   IonLabel,
 } from '@ionic/react';
-import { useContext, useState, useRef } from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react';
 import { UserContext } from '../../../App';
-import Signup from '../signup/signup';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import './login.css';
-import { Route } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+
 import { IonReactRouter } from '@ionic/react-router';
-import { OverlayEventDetail } from '@ionic/core/components';
+
+import { app, database } from '../../../utils/firebaseConfig';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+} from 'firebase/auth';
+import {
+  collection,
+  setDoc,
+  getDocs,
+  doc,
+  updateDoc,
+  deleteDoc,
+} from 'firebase/firestore';
 
 const Login = () => {
-  const user = useContext(UserContext);
-  const [inputs, setInputs] = useState({
+  const auth = getAuth();
+  const db = collection(database, 'users');
+  const history = useHistory();
+  const [user, loading, error] = useAuthState(auth);
+  const [isRegistered, setIsRegistered] = useState(false);
+
+  useEffect(() => {
+    if (loading) {
+      setIsRegistered(true);
+      return;
+    }
+    if (user) history.push('/info/news');
+  }, [user, loading]);
+
+  const [RegisterInputs, setRegisterInputs] = useState({
     username: '',
     email: '',
-    phone: '',
     password: '',
+    dateOfBirth: '',
+    phone: '',
   });
 
-  const handleChange = (e) => {
-    console.log(e);
+  const [LoginInputs, setLoginInputs] = useState({
+    email: '',
+    password: '',
+  });
+  const handleRegisterChange = (e) => {
+    setRegisterInputs((previousState) => ({
+      ...previousState,
+      [e.target.name]: e.target.value,
+    }));
   };
-  const handleLogin = () => {
-    console.log('login');
+  const handleLoginChange = (e) => {
+    setLoginInputs((previousState) => ({
+      ...previousState,
+      [e.target.name]: e.target.value,
+    }));
   };
-  const handleRegister = () => {
-    console.log(inputs);
-    // user.setIsLoggedIn(true);
-    modal.current?.dismiss();
+
+  const handleLogin = async () => {
+    try {
+      await signInWithEmailAndPassword(
+        auth,
+        LoginInputs.email,
+        LoginInputs.password
+      );
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const handleRegister = async () => {
+    let res;
+    try {
+      res = await createUserWithEmailAndPassword(
+        auth,
+        RegisterInputs.email,
+        RegisterInputs.password
+      );
+      modal.current?.dismiss();
+      console.log('User Created');
+    } catch (error) {
+      alert(error.message);
+    }
+    const user = res.user;
+    try {
+      await setDoc(doc(db, user.uid), {
+        username: RegisterInputs.username,
+        email: RegisterInputs.email,
+        phone: RegisterInputs.phone,
+        dateOfBirth: RegisterInputs.dateOfBirth,
+      });
+      console.log('Document Created');
+    } catch (error) {
+      history.push('/login');
+      alert(error.message);
+    }
+  };
+
+  const sendPasswordReset = async (email) => {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      alert('Password reset link sent!');
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
   };
 
   const modal = useRef();
@@ -69,16 +152,18 @@ const Login = () => {
         <form className="form">
           <IonItem className="border">
             <IonInput
-              name="emailLogin"
+              name="email"
               type="email"
               placeholder="Email"
+              onIonInput={handleLoginChange}
             ></IonInput>
           </IonItem>
           <IonItem className="border">
             <IonInput
-              name="passwordLogin"
+              name="password"
               type="password"
               placeholder="Password"
+              onIonInput={handleLoginChange}
             ></IonInput>
           </IonItem>
 
@@ -114,40 +199,52 @@ const Login = () => {
                 <IonInput
                   name="username"
                   type="username"
-                  value={inputs.username}
+                  value={RegisterInputs.username}
                   placeholder="Username"
                   required
-                  ionChange={handleChange}
+                  onIonInput={handleRegisterChange}
                 ></IonInput>
               </IonItem>
               <IonItem className="border">
                 <IonInput
-                  value={inputs.email}
+                  value={RegisterInputs.email}
                   name="email"
                   type="email"
                   placeholder="Email"
                   required
-                  ionChange={handleChange}
+                  onIonInput={handleRegisterChange}
                 ></IonInput>
               </IonItem>
               <IonItem className="border">
                 <IonInput
                   name="phone"
                   type="phone"
-                  value={inputs.phone}
+                  value={RegisterInputs.phone}
                   placeholder="Phone Number"
                   required
-                  ionChange={handleChange}
+                  onIonInput={handleRegisterChange}
                 ></IonInput>
               </IonItem>
+
               <IonItem className="border">
                 <IonInput
-                  value={inputs.password}
+                  name="dateOfBirth"
+                  type="date"
+                  value={RegisterInputs.dateOfBirth}
+                  placeholder="Date of Birth"
+                  required
+                  onIonInput={handleRegisterChange}
+                ></IonInput>
+              </IonItem>
+
+              <IonItem className="border">
+                <IonInput
+                  value={RegisterInputs.password}
                   name="password"
                   type="password"
                   placeholder="Password"
                   required
-                  ionChange={handleChange}
+                  onIonInput={handleRegisterChange}
                 ></IonInput>
               </IonItem>
               <IonItem className="border">

@@ -1,4 +1,4 @@
-import { Redirect, Route } from "react-router-dom";
+import { Redirect, Route } from 'react-router-dom';
 import {
   IonApp,
   IonIcon,
@@ -6,13 +6,13 @@ import {
   IonTabBar,
   IonTabButton,
   IonTabs,
-} from "@ionic/react";
-import { IonReactRouter } from "@ionic/react-router";
-import { chatbubbleEllipses, person, newspaper, school } from "ionicons/icons";
-import Info from "./pages/info/info";
-import Academy from "./pages/academy/academy";
-import Chat from "./pages/chat/chat";
-import Profile from "./pages/profile/profile";
+} from '@ionic/react';
+import { IonReactRouter } from '@ionic/react-router';
+import { chatbubbleEllipses, person, newspaper, school } from 'ionicons/icons';
+import Info from './pages/info/info';
+import Academy from './pages/academy/academy';
+import Chat from './pages/chat/chat';
+import Profile from './pages/profile/profile';
 
 const Tabs: React.FC = () => {
   return (

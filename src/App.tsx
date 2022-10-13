@@ -14,11 +14,12 @@ import Info from './pages/info/info';
 import Academy from './pages/academy/academy';
 import Chat from './pages/chat/chat';
 import Profile from './pages/profile/profile';
-import Signup from './pages/authenticate/signup/signup';
+
 import Login from './pages/authenticate/login/login';
 import Tabs from './tabs';
 import { createContext } from 'react';
 import { useState, useContext } from 'react';
+
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 
@@ -37,6 +38,8 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import { getAuth } from 'firebase/auth';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 setupIonicReact();
 
@@ -51,21 +54,20 @@ const user: IUserManager = {
 export const UserContext = createContext<IUserManager>(user);
 
 const IonicApp: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const user = useContext(UserContext);
+  const auth = getAuth();
+  const [user] = useAuthState(auth);
 
-  user.setIsLoggedIn = setIsLoggedIn;
-  console.log(isLoggedIn);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const loggedUser = useContext(UserContext);
+  loggedUser.setIsLoggedIn = setIsLoggedIn;
+
   return (
     <IonApp>
       <IonReactRouter>
-        <Route
-          path="/login"
-          component={isLoggedIn ? Tabs : Login}
-          exact={true}
-        />
+        <Route path="/login" component={user ? Tabs : Login} exact={true} />
         <Route path="/info/news" component={Tabs} exact={true} />
-        <Redirect from="/" to={isLoggedIn ? '/info/news' : '/login'} />
+
+        <Redirect from="/" to={'/login'} />
       </IonReactRouter>
     </IonApp>
   );

@@ -10,27 +10,27 @@ import {
   IonCardHeader,
   IonCardSubtitle,
   IonLabel,
-} from "@ionic/react";
-import ExploreContainer from "../../../components/ExploreContainer";
-import "./news.css";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { fetchArticles } from "../../../utils/fetchArticles";
-import { Puff } from "react-loader-spinner";
+} from '@ionic/react';
+import ExploreContainer from '../../../components/ExploreContainer';
+import './news.css';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { fetchArticles } from '../../../utils/fetchArticles';
+import { Puff } from 'react-loader-spinner';
 
 const News = () => {
   const [articles, setArticles] = useState();
 
   useEffect(() => {
     fetch(
-      "https://newsapi.org/v2/everything?q=Cryptocurrency&sortBy=latest&apiKey=014261da83644780b3727be794fb6777"
+      'https://newsapi.org/v2/everything?q=Cryptocurrency&sortBy=latest&apiKey=014261da83644780b3727be794fb6777'
     )
       .then((response) => response.json())
       .then((data) => {
         setArticles(data.articles);
       });
   }, []);
-  console.log(articles);
+
   return (
     <IonPage>
       <IonContent>
@@ -42,8 +42,8 @@ const News = () => {
             color="#fff"
             ariaLabel="puff-loading"
             wrapperStyle={{
-              justifyContent: "center",
-              alignContent: "center",
+              justifyContent: 'center',
+              alignContent: 'center',
             }}
             wrapperClass=""
             visible={true}
@@ -62,8 +62,8 @@ const News = () => {
                       {article.description}
                       <br />
                       <br />
-                      <div className="checknews">Read News:</div>{" "}
-                      <a href={article.url}>{article.url}</a>{" "}
+                      <div className="checknews">Read News:</div>{' '}
+                      <a href={article.url}>{article.url}</a>{' '}
                     </IonCardContent>
                   </IonCard>
                 </div>

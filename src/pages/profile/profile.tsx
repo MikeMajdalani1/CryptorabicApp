@@ -7,12 +7,19 @@ import {
   IonLabel,
   IonItem,
   IonInput,
-} from "@ionic/react";
-
-import Header from "../../components/header/header";
-import "./profile.css";
+  IonButton,
+} from '@ionic/react';
+import { getAuth, signOut } from 'firebase/auth';
+import Header from '../../components/header/header';
+import './profile.css';
 
 const Profile: React.FC = () => {
+  const auth = getAuth();
+
+  const singOut = () => {
+    signOut(auth);
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -49,6 +56,9 @@ const Profile: React.FC = () => {
               </IonList>
             </div>
           </div>
+          <IonButton size="large" onClick={singOut} expand="block">
+            Sign Out
+          </IonButton>
         </div>
       </IonContent>
     </IonPage>
