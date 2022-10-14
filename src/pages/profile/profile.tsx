@@ -12,12 +12,13 @@ import {
 import { getAuth, signOut } from 'firebase/auth';
 import Header from '../../components/header/header';
 import './profile.css';
-
+import { useHistory } from 'react-router-dom';
 const Profile: React.FC = () => {
   const auth = getAuth();
-
+  const history = useHistory();
   const singOut = () => {
     signOut(auth);
+    history.replace('/login');
   };
 
   return (

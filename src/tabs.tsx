@@ -19,39 +19,22 @@ const Tabs: React.FC = () => {
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
-          <Route path="/info/">
-            <Info />
-          </Route>
-          <Route path="/academy">
-            <Academy />
-          </Route>
-          <Route path="/chat">
-            <Chat />
-          </Route>
-          <Route path="/profile">
-            <Profile />
-          </Route>
-          <Route exact path="/">
-            <Redirect to="/info/news" />
-          </Route>
-          <Route exact path="/login">
-            <Redirect to="/info/news" />
-          </Route>
-          <Route exact path="/register">
-            <Redirect to="/info/news" />
-          </Route>
+          {/* <Route path="/tabs/info" component={Info} exact={true} /> */}
+          <Route path="/tabs/academy" component={Academy} exact={true} />
+          <Route path="/tabs/chat" component={Chat} exact={true} />
+          <Route path="/tabs/profile" component={Profile} exact={true} />
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
-          <IonTabButton tab="Info" href="/info/news">
+          {/* <IonTabButton tab="Info" href="/tabs/info">
             <IonIcon icon={newspaper} />
-          </IonTabButton>
-          <IonTabButton tab="Academy" href="/academy">
+          </IonTabButton> */}
+          <IonTabButton tab="Academy" href="/tabs/academy">
             <IonIcon icon={school} />
           </IonTabButton>
-          <IonTabButton tab="Chat" href="/chat">
+          <IonTabButton tab="Chat" href="/tabs/chat">
             <IonIcon icon={chatbubbleEllipses} />
           </IonTabButton>
-          <IonTabButton tab="Profile" href="/profile">
+          <IonTabButton tab="Profile" href="/tabs/profile">
             <IonIcon icon={person} />
           </IonTabButton>
         </IonTabBar>

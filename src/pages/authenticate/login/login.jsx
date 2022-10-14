@@ -42,13 +42,13 @@ const Login = () => {
   const [user, loading, error] = useAuthState(auth);
   const [isRegistered, setIsRegistered] = useState(false);
 
-  useEffect(() => {
-    if (loading) {
-      setIsRegistered(true);
-      return;
-    }
-    if (user) history.push('/info/news');
-  }, [user, loading]);
+  // useEffect(() => {
+  //   if (loading) {
+  //     setIsRegistered(true);
+  //     return;
+  //   }
+  //   if (user) history.replace('/tabs/academy');
+  // }, [user, loading]);
 
   const [RegisterInputs, setRegisterInputs] = useState({
     username: '',
@@ -82,6 +82,7 @@ const Login = () => {
         LoginInputs.email,
         LoginInputs.password
       );
+      history.replace('/tabs/academy');
     } catch (error) {
       alert(error.message);
     }
@@ -96,6 +97,7 @@ const Login = () => {
         RegisterInputs.password
       );
       modal.current?.dismiss();
+      history.replace('/tabs/academy');
       console.log('User Created');
     } catch (error) {
       alert(error.message);

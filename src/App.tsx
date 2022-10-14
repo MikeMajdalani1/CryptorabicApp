@@ -65,9 +65,19 @@ const IonicApp: React.FC = () => {
     <IonApp>
       <IonReactRouter>
         <Route path="/login" component={user ? Tabs : Login} exact={true} />
-        <Route path="/info/news" component={Tabs} exact={true} />
-
-        <Redirect from="/" to={'/login'} />
+        <Route path="/tabs" component={user ? Tabs : Login} exact={true} />
+        <Route
+          path="/tabs/academy"
+          component={user ? Tabs : Login}
+          exact={true}
+        />
+        <Route path="/tabs/chat" component={user ? Tabs : Login} exact={true} />
+        <Route
+          path="/tabs/profile"
+          component={user ? Tabs : Login}
+          exact={true}
+        />
+        <Route path="/" component={user ? Tabs : Login} exact />
       </IonReactRouter>
     </IonApp>
   );
