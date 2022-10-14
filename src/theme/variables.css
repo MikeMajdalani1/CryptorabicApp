@@ -1,11 +1,11 @@
 /* Ionic Variables and Theming. For more info, please see:
 http://ionicframework.com/docs/theming/ */
 
-@import url("https://fonts.googleapis.com/css?family=Open+Sans");
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Coiny&family=Karla&family=Open+Sans:wght@400;500;600&family=Roboto&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Titillium+Web&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Coiny&family=Karla&family=Open+Sans:wght@400;500;600&family=Roboto&display=swap");
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Coiny&family=Karla&family=Open+Sans:wght@400;500;600&family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Coiny&family=Karla&family=Open+Sans:wght@400;500;600&family=Roboto&display=swap');
 * {
   padding: 0;
   margin: 0;
@@ -18,15 +18,24 @@ h2 {
   line-height: 13px;
   letter-spacing: 2px;
   text-transform: capitalize;
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
 }
-
+.native-input[type='date']::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+.ion-input[type='date']::before {
+}
+:host {
+  --ion-item-highlight-color-focused: red !important;
+  --highlight-color-focused: red !important;
+}
 /** Ionic CSS Variables **/
 :root {
   --ion-text-color: #ffffff;
   --ion-toolbar-background: #102835;
   --ion-background-color: #102835;
-
+  --ion-item-highlight-color-focused: red !important;
+  --highlight-color-focused: red !important;
   /** TABBAR **/
   --ion-tab-bar-background: #286ab7;
   --ion-tab-bar-color-selected: #ffffff;
