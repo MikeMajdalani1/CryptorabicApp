@@ -25,12 +25,9 @@ h4 {
   display: flex;
   flex-direction: column;
   gap: 50px;
+  padding-bottom: 40px;
 }
-@media (min-width: 767.98px) {
-  .infoRegister {
-    padding-bottom: 40px;
-  }
-}
+
 .logoandtext {
   display: flex;
   flex-direction: column;

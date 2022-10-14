@@ -58,7 +58,6 @@ const Login = () => {
     username: '',
     email: '',
     password: '',
-    dateOfBirth: '',
     phone: '',
   });
 
@@ -85,20 +84,17 @@ const Login = () => {
   const handleLogin = async () => {
     validateLogin(LoginInputs);
     console.log(loginErrors.allchecked);
-    if (loginErrors.allchecked === 'checked') {
-      try {
-        await signInWithEmailAndPassword(
-          auth,
-          LoginInputs.email,
-          LoginInputs.password
-        );
-        history.replace('/tabs/academy');
-      } catch (error) {
-        console.log(error.message);
-        setAutherror('Wrong Email or Password');
-      }
-    } else {
-      console.log('Form error');
+
+    try {
+      await signInWithEmailAndPassword(
+        auth,
+        LoginInputs.email,
+        LoginInputs.password
+      );
+      history.replace('/tabs/academy');
+    } catch (error) {
+      console.log(error.message);
+      setAutherror('Wrong Email or Password');
     }
   };
 
@@ -122,7 +118,7 @@ const Login = () => {
         username: RegisterInputs.username,
         email: RegisterInputs.email,
         phone: RegisterInputs.phone,
-        dateOfBirth: RegisterInputs.dateOfBirth,
+        label: '',
       });
       console.log('Document Created');
     } catch (error) {
@@ -292,17 +288,6 @@ const Login = () => {
                       type="number"
                       value={RegisterInputs.phone}
                       placeholder="Phone Number"
-                      required
-                      onIonInput={handleRegisterChange}
-                    ></IonInput>
-                  </IonItem>
-
-                  <IonItem className="border">
-                    <IonInput
-                      name="dateOfBirth"
-                      type="date"
-                      value={RegisterInputs.dateOfBirth}
-                      placeholder="Date of Birth"
                       required
                       onIonInput={handleRegisterChange}
                     ></IonInput>

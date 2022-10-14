@@ -11,7 +11,18 @@ http://ionicframework.com/docs/theming/ */
   margin: 0;
   box-sizing: border-box;
 }
-
+.alert-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.alert-button-group {
+  justify-content: center !important;
+}
+.alert-message {
+  padding-bottom: 0;
+}
 h2 {
   font-size: 20px;
   font-weight: 600;
