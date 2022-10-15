@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@capacitor/android": "^4.3.0",
+    "@capacitor/camera": "^4.1.2",
     "@capacitor/core": "^4.3.0",
     "@capacitor/ios": "^4.3.0",
     "@ionic/react": "^6.0.0",

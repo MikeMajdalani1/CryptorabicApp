@@ -77,7 +77,7 @@ const IonicApp: React.FC = () => {
           component={user ? Tabs : Login}
           exact={true}
         />
-        <Route path="/" component={user ? Tabs : Login} exact />
+        <Redirect path="/" to={user ? '/tabs/academy' : '/login'} exact />
       </IonReactRouter>
     </IonApp>
   );

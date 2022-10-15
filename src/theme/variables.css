@@ -11,6 +11,9 @@ http://ionicframework.com/docs/theming/ */
   margin: 0;
   box-sizing: border-box;
 }
+ion-toast {
+  --background: #79bcfa;
+}
 .alert-wrapper {
   display: flex;
   flex-direction: column;
