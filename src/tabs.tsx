@@ -29,7 +29,7 @@ const Tabs: React.FC = () => {
             <IonIcon icon={newspaper} />
           </IonTabButton> */}
           <IonTabButton tab="Academy" href="/tabs/academy">
-            <IonIcon icon={school} />
+            <IonIcon icon={newspaper} />
           </IonTabButton>
           <IonTabButton tab="Chat" href="/tabs/chat">
             <IonIcon icon={chatbubbleEllipses} />

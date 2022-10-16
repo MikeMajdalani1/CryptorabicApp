@@ -106,9 +106,10 @@ const Login = () => {
         RegisterInputs.email,
         RegisterInputs.password
       );
+
+      console.log('User Created');
       modal.current?.dismiss();
       history.replace('/tabs/academy');
-      console.log('User Created');
     } catch (error) {
       alert(error.message);
     }
@@ -118,11 +119,11 @@ const Login = () => {
         username: RegisterInputs.username,
         email: RegisterInputs.email,
         phone: RegisterInputs.phone,
-        label: '',
+        label: 'New User',
       });
       console.log('Document Created');
     } catch (error) {
-      history.push('/login');
+      history.replace('/login');
       alert(error.message);
     }
   };

@@ -24,7 +24,7 @@ ion-toast {
   justify-content: center !important;
 }
 .alert-message {
-  padding-bottom: 0;
+  padding-bottom: 0 !important;
 }
 h2 {
   font-size: 20px;
@@ -40,16 +40,13 @@ h2 {
 .ion-input[type='date']::before {
 }
 :host {
-  --ion-item-highlight-color-focused: red !important;
-  --highlight-color-focused: red !important;
 }
 /** Ionic CSS Variables **/
 :root {
   --ion-text-color: #ffffff;
   --ion-toolbar-background: #102835;
   --ion-background-color: #102835;
-  --ion-item-highlight-color-focused: red !important;
-  --highlight-color-focused: red !important;
+
   /** TABBAR **/
   --ion-tab-bar-background: #286ab7;
   --ion-tab-bar-color-selected: #ffffff;

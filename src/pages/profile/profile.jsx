@@ -10,8 +10,17 @@ import {
   IonButton,
   IonIcon,
   useIonToast,
+  IonAccordion,
+  IonAccordionGroup,
 } from '@ionic/react';
-import { getAuth, signOut } from 'firebase/auth';
+import {
+  getAuth,
+  signOut,
+  updateEmail,
+  updatePassword,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
+} from 'firebase/auth';
 import Header from '../../components/header/header';
 import './profile.css';
 import {
@@ -33,14 +42,24 @@ import {
   cloudUploadOutline,
   checkmarkCircleOutline,
   alertOutline,
+  settingsOutline,
+  settings,
+  caretUpCircle,
 } from 'ionicons/icons';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript';
+import { async } from '@firebase/util';
+
 const Profile = () => {
   const auth = getAuth();
   const [user, loading, error] = useAuthState(auth);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
+  const [label, setLabel] = useState('');
   const [photo, setPhoto] = useState('/');
+  const [settingsTrigger, setsettingsTrigger] = useState(false);
 
   const [ProfileInputs, setProfileInputs] = useState({
     email: '',
@@ -48,7 +67,12 @@ const Profile = () => {
     label: '',
   });
 
+  const [passwordInput, SetPasswordInput] = useState({
+    password: '',
+  });
+
   const [presentAlert] = useIonAlert();
+  const [reAuth] = useIonAlert();
   const [presentToast] = useIonToast();
 
   const db = collection(database, 'users');
@@ -79,6 +103,7 @@ const Profile = () => {
   const singOut = () => {
     signOut(auth);
     history.replace('/login');
+    window.location.reload();
   };
 
   const handleProfileChange = (e) => {
@@ -87,8 +112,13 @@ const Profile = () => {
       [e.target.name]: e.target.value,
     }));
   };
-
-  const fetchUserName = async () => {
+  const handlePasswordChange = (e) => {
+    SetPasswordInput((previousState) => ({
+      ...previousState,
+      [e.target.name]: e.target.value,
+    }));
+  };
+  const fetchData = async () => {
     try {
       const q = query(
         collection(database, 'users'),
@@ -101,8 +131,9 @@ const Profile = () => {
       setName(data.username);
       setPhone(data.phone);
       setEmail(data.email);
+      setLabel(data.label);
       setProfileInputs({
-        email: data.email,
+        email: auth.currentUser.email,
         phone: data.phone,
         label: data.label,
       });
@@ -113,7 +144,7 @@ const Profile = () => {
     }
   };
   useEffect(() => {
-    fetchUserName();
+    fetchData();
   }, []);
 
   const deleteData = async () => {
@@ -121,41 +152,300 @@ const Profile = () => {
     try {
       const res = await deleteDoc(dataToDelete);
       console.log(res);
+      try {
+        await user.delete();
+        history.replace('/login');
+        window.location.reload();
+      } catch (error) {
+        alert(error.message);
+      }
     } catch (error) {
       alert(error.message);
     }
-    try {
-      user.delete();
-    } catch (error) {
-      alert(error.message);
-    }
-    history.replace('/login');
   };
 
-  const updateData = async () => {
+  const updateData = async (field) => {
     let dataToUpdate = doc(database, 'users', user?.uid);
+    switch (field) {
+      //-------------------------------------------------
+      case 'email':
+        const regex =
+          /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+
+        if (!regex.test(String(ProfileInputs.email).toLowerCase())) {
+          presentToast({
+            message: 'Wrong email address input',
+            duration: 1500,
+            icon: alertOutline,
+            cssClass: 'redToast',
+          });
+          break;
+        }
+        if (email === ProfileInputs.email) {
+          presentToast({
+            message: 'Same email address got provided',
+            duration: 1500,
+            icon: alertOutline,
+            cssClass: 'redToast',
+          });
+          break;
+        } else if (ProfileInputs.email === '') {
+          presentToast({
+            message: 'Please provide an email address',
+            duration: 1500,
+            icon: alertOutline,
+            cssClass: 'redToast',
+          });
+          break;
+        } else {
+          reAuth({
+            header: 'Attention',
+            message: 'Enter your current password to proceed',
+
+            inputs: [
+              {
+                name: 'oldPassword',
+                placeholder: 'Password',
+              },
+            ],
+            buttons: [
+              {
+                text: 'Cancel',
+                role: 'cancel',
+                handler: () => {},
+              },
+              {
+                text: 'Confirm',
+                role: 'confirm',
+                handler: (alertData) => {
+                  const oldPassword = alertData.oldPassword;
+                  console.log(oldPassword);
+                  if (oldPassword === '') {
+                    presentToast({
+                      message: 'Please enter your current password',
+                      duration: 2000,
+                      icon: alertOutline,
+                      cssClass: 'redToast',
+                    });
+                    return false;
+                  } else {
+                    reAuthenticate(oldPassword);
+                    _changeEmail(ProfileInputs.email);
+
+                    presentToast({
+                      message: 'Email Address Changed',
+                      duration: 1500,
+                      icon: checkmarkCircleOutline,
+                    });
+                  }
+                },
+              },
+            ],
+            onDidDismiss: () => {
+              console.log('dismised');
+            },
+          });
+          break;
+        }
+      //-------------------------------------------------
+
+      //-------------------------------------------------
+      case 'phone':
+        if (phone === ProfileInputs.phone) {
+          presentToast({
+            message: 'Same phone number got provided',
+            duration: 1500,
+            icon: alertOutline,
+            cssClass: 'redToast',
+          });
+          break;
+        } else if (ProfileInputs.phone === '') {
+          presentToast({
+            message: 'Please provide a phone number',
+            duration: 1500,
+            icon: alertOutline,
+            cssClass: 'redToast',
+          });
+          break;
+        } else {
+          try {
+            const res = await updateDoc(dataToUpdate, {
+              phone: ProfileInputs.phone,
+            });
+
+            console.log(res);
+            fetchData();
+            presentToast({
+              message: 'Data Successfully Updated',
+              duration: 1500,
+              icon: checkmarkCircleOutline,
+            });
+          } catch (error) {
+            console.log('UpdatePhone error' + error.message);
+            presentToast({
+              message: 'Error Updating Data',
+              duration: 1500,
+              icon: alertOutline,
+              cssClass: 'redToast',
+            });
+          } finally {
+            break;
+          }
+        }
+      //-------------------------------------------------
+
+      //-------------------------------------------------
+      case 'label':
+        if (label === ProfileInputs.label) {
+          presentToast({
+            message: 'Same label got provided',
+            duration: 1500,
+            icon: alertOutline,
+            cssClass: 'redToast',
+          });
+          break;
+        } else if (ProfileInputs.label === '') {
+          presentToast({
+            message: 'Please provide a label',
+            duration: 1500,
+            icon: alertOutline,
+            cssClass: 'redToast',
+          });
+          break;
+        } else {
+          try {
+            const res = await updateDoc(dataToUpdate, {
+              label: ProfileInputs.label,
+            });
+
+            console.log(res);
+            fetchData();
+            presentToast({
+              message: 'Data Successfully Updated',
+              duration: 1500,
+              icon: checkmarkCircleOutline,
+            });
+          } catch (error) {
+            console.log('UpdateLabel error' + error.message);
+            presentToast({
+              message: 'Error Updating Data',
+              duration: 1500,
+              icon: alertOutline,
+              cssClass: 'redToast',
+            });
+          } finally {
+            break;
+          }
+        }
+      //-------------------------------------------------
+
+      case 'email':
+        return console.log('lol');
+    }
+  };
+
+  const changePassword = (newPassword) => {
+    if (newPassword === '') {
+      presentToast({
+        message: 'Please enter a new password if you wish to change it',
+        duration: 2500,
+        icon: alertOutline,
+      });
+    } else {
+      reAuth({
+        header: 'Attention',
+        message: 'Enter your current password to proceed',
+
+        inputs: [
+          {
+            name: 'oldPassword',
+            placeholder: 'Password',
+          },
+        ],
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel',
+            handler: () => {},
+          },
+          {
+            text: 'Confirm',
+            role: 'confirm',
+            handler: (alertData) => {
+              const oldPassword = alertData.oldPassword;
+              console.log(oldPassword);
+              if (oldPassword === '') {
+                presentToast({
+                  message: 'Please enter your current password',
+                  duration: 2000,
+                  icon: alertOutline,
+                  cssClass: 'redToast',
+                });
+                return false;
+              } else {
+                _changePassword(oldPassword, newPassword);
+              }
+            },
+          },
+        ],
+        onDidDismiss: () => {
+          console.log('dismised');
+          SetPasswordInput({ password: '' });
+        },
+      });
+    }
+  };
+  const _changePassword = async (oldPassword, newPassword) => {
+    reAuthenticate(oldPassword);
     try {
-      const res = await updateDoc(dataToUpdate, {
-        phone: ProfileInputs.phone,
-        label: ProfileInputs.label,
-      });
+      const res = await updatePassword(auth.currentUser, newPassword);
       console.log(res);
-      fetchUserName();
+
       presentToast({
-        message: 'Data Successfully Updated',
-        duration: 1500,
-        icon: checkmarkCircleOutline,
-      });
-    } catch (error) {
-      alert(error.message);
-      presentToast({
-        message: 'Error Updating Data',
+        message: 'Password Changed Successfully',
         duration: 1500,
         icon: alertOutline,
       });
+    } catch (error) {
+      console.log('UpdatePassword error' + error.message);
+      presentToast({
+        message: 'Wrong Password',
+        duration: 1500,
+        icon: alertOutline,
+        cssClass: 'redToast',
+      });
     }
   };
 
+  const _changeEmail = async (newEmail) => {
+    try {
+      const res = await updateEmail(user, newEmail);
+      console.log(res);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+  const reAuthenticate = async (password) => {
+    const credential = EmailAuthProvider.credential(
+      auth.currentUser.email,
+      password
+    );
+    try {
+      const res = await reauthenticateWithCredential(
+        auth.currentUser,
+        credential
+      );
+      console.log(res);
+    } catch (error) {
+      console.log('ReAuth error' + error.message);
+      presentToast({
+        message: 'Wrong Password',
+        duration: 1500,
+        icon: alertOutline,
+        cssClass: 'redToast',
+      });
+    }
+  };
   return (
     <IonPage>
       <IonHeader>
@@ -184,8 +474,8 @@ const Profile = () => {
                 <IonLabel className="username">{name}</IonLabel>
               ) : (
                 <Puff
-                  height="40"
-                  width="40"
+                  height="38"
+                  width="38"
                   radius={1}
                   color="#fff"
                   ariaLabel="puff-loading"
@@ -198,73 +488,209 @@ const Profile = () => {
           </div>
           <div className="detailscontainer">
             <div className="detailslist">
-              <IonLabel>Email Address</IonLabel>
-              <IonItem>
-                <IonInput
-                  name="email"
-                  value={ProfileInputs.email}
-                  onIonInput={handleProfileChange}
-                  placeholder="Email Address"
-                ></IonInput>
-              </IonItem>
-              <hr />
-              <hr />
-
-              <IonLabel>Phone Number</IonLabel>
-              <IonItem>
-                <IonInput
-                  value={ProfileInputs.phone}
-                  name="phone"
-                  onIonInput={handleProfileChange}
-                  placeholder="Phone Number"
-                ></IonInput>
-              </IonItem>
-              <hr />
-              <hr />
-
-              <IonLabel>Label</IonLabel>
-              <IonItem>
-                <IonInput
-                  name="label"
-                  value={ProfileInputs.label}
-                  onIonInput={handleProfileChange}
-                  placeholder="Ex: The Dip Buyer"
-                ></IonInput>
-              </IonItem>
-              <hr />
-              <hr />
-              <IonButton onClick={updateData}>Update Info</IonButton>
-
-              <IonButton color="dark" onClick={singOut} expand="block">
-                Sign Out
-              </IonButton>
-              <IonButton
-                color="danger"
-                expand="block"
-                onClick={() =>
-                  presentAlert({
-                    header: 'Alert',
-                    message: 'Are you sure you want to delete your account?',
-                    buttons: [
-                      {
-                        text: 'Cancel',
-                        role: 'cancel',
-                        handler: () => {},
-                      },
-                      {
-                        text: 'Delete',
-                        role: 'confirm',
-                        handler: () => {
-                          deleteData();
-                        },
-                      },
-                    ],
-                    onDidDismiss: () => console.log('dismiised'),
-                  })
-                }
+              <div
+                onClick={() => setsettingsTrigger(!settingsTrigger)}
+                className="settingsIcon"
               >
-                Delete Account
-              </IonButton>
+                <IonIcon icon={!settingsTrigger ? settingsOutline : settings} />
+              </div>
+              {!settingsTrigger ? (
+                <>
+                  {' '}
+                  <IonLabel>Email Address</IonLabel>
+                  {phone ? (
+                    <IonItem>
+                      <IonInput
+                        name="email"
+                        value={auth.currentUser.email}
+                        disabled
+                      ></IonInput>
+                    </IonItem>
+                  ) : (
+                    <Skeleton
+                      baseColor="#102835"
+                      highlightColor="#286ab7"
+                      duration={1.3}
+                      className="skeleton"
+                    />
+                  )}
+                  <hr />
+                  <hr />
+                  <IonLabel>Phone Number</IonLabel>
+                  {phone ? (
+                    <IonItem>
+                      <IonInput value={phone} name="phone" disabled></IonInput>
+                    </IonItem>
+                  ) : (
+                    <Skeleton
+                      baseColor="#102835"
+                      highlightColor="#286ab7"
+                      duration={1.3}
+                      className="skeleton"
+                    />
+                  )}
+                  <hr />
+                  <hr />
+                  <IonLabel>Label</IonLabel>
+                  {label ? (
+                    <IonItem>
+                      <IonInput name="label" value={label} disabled></IonInput>
+                    </IonItem>
+                  ) : (
+                    <Skeleton
+                      baseColor="#102835"
+                      highlightColor="#286ab7"
+                      duration={1.3}
+                      className="skeleton"
+                    />
+                  )}
+                  <hr />
+                  <hr />
+                </>
+              ) : (
+                <>
+                  {' '}
+                  <IonLabel>Email Address</IonLabel>
+                  <div className="updateContent">
+                    {phone ? (
+                      <IonItem>
+                        <IonInput
+                          className="nopadding"
+                          name="email"
+                          value={ProfileInputs.email}
+                          onIonInput={handleProfileChange}
+                          placeholder="Email Address"
+                        ></IonInput>
+                      </IonItem>
+                    ) : (
+                      <Skeleton
+                        baseColor="#102835"
+                        highlightColor="#286ab7"
+                        duration={1.3}
+                        className="skeleton"
+                      />
+                    )}
+                    <div
+                      className="updateIcon"
+                      onClick={() => updateData('email')}
+                    >
+                      <IonIcon icon={caretUpCircle}></IonIcon>
+                    </div>
+                  </div>
+                  <hr />
+                  <hr />
+                  <IonLabel>Phone Number</IonLabel>
+                  <div className="updateContent">
+                    {phone ? (
+                      <IonItem>
+                        <IonInput
+                          className="nopadding"
+                          name="phone"
+                          value={ProfileInputs.phone}
+                          onIonInput={handleProfileChange}
+                          placeholder="Phone Number"
+                        ></IonInput>
+                      </IonItem>
+                    ) : (
+                      <Skeleton
+                        baseColor="#102835"
+                        highlightColor="#286ab7"
+                        duration={1.3}
+                        className="skeleton"
+                      />
+                    )}
+                    <div
+                      className="updateIcon"
+                      onClick={() => updateData('phone')}
+                    >
+                      <IonIcon icon={caretUpCircle}></IonIcon>
+                    </div>
+                  </div>
+                  <hr />
+                  <hr />
+                  <IonLabel>Label</IonLabel>
+                  <div className="updateContent">
+                    {label ? (
+                      <IonItem>
+                        <IonInput
+                          className="nopadding"
+                          name="label"
+                          value={ProfileInputs.label}
+                          onIonInput={handleProfileChange}
+                          placeholder="Ex: The Dip Buyer"
+                        ></IonInput>
+                      </IonItem>
+                    ) : (
+                      <Skeleton
+                        baseColor="#102835"
+                        highlightColor="#286ab7"
+                        duration={1.3}
+                        className="skeleton"
+                      />
+                    )}
+                    <div
+                      className="updateIcon"
+                      onClick={() => updateData('label')}
+                    >
+                      <IonIcon icon={caretUpCircle}></IonIcon>
+                    </div>
+                  </div>
+                  <hr />
+                  <hr />
+                  <IonLabel>Change Password</IonLabel>
+                  <div className="updateContent">
+                    <IonItem>
+                      <IonInput
+                        className="nopadding"
+                        name="password"
+                        value={passwordInput.password}
+                        onIonInput={handlePasswordChange}
+                        placeholder="Enter New Password"
+                      ></IonInput>
+                    </IonItem>
+
+                    <div
+                      className="updateIcon"
+                      onClick={() => changePassword(passwordInput.password)}
+                    >
+                      <IonIcon icon={caretUpCircle}></IonIcon>
+                    </div>
+                  </div>
+                  <hr />
+                  <hr />
+                  <IonButton color="dark" onClick={singOut} expand="block">
+                    Sign Out
+                  </IonButton>
+                  <IonButton
+                    color="danger"
+                    expand="block"
+                    onClick={() =>
+                      presentAlert({
+                        header: 'Alert',
+                        message:
+                          'Are you sure you want to delete your account?',
+                        buttons: [
+                          {
+                            text: 'Cancel',
+                            role: 'cancel',
+                            handler: () => {},
+                          },
+                          {
+                            text: 'Delete',
+                            role: 'confirm',
+                            handler: () => {
+                              deleteData();
+                            },
+                          },
+                        ],
+                        onDidDismiss: () => console.log('dismiised'),
+                      })
+                    }
+                  >
+                    Delete Account
+                  </IonButton>
+                </>
+              )}
             </div>
           </div>
         </div>
