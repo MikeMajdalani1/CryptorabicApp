@@ -1,0 +1,5 @@
+- Spalsh Screen
+- Login/Regitser validations
+- Wehn switching from tab to tab to reset data of Login
+-Upload image of profile, front and back
+-- fix loading of the messages in DB, restruct logic

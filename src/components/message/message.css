@@ -1,0 +1,63 @@
+.avatarSizes {
+  width: 40px;
+  height: 40px;
+  align-self: flex-end;
+}
+
+.mainContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.messageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #17394b;
+
+  border-radius: 10px;
+  padding: 10px 20px;
+  width: max-content;
+  max-width: 230px;
+  color: white;
+}
+@media (max-width: 320px) {
+  .messageContainer {
+    max-width: 175px;
+  }
+}
+@media (max-width: 275px) {
+  .messageContainer {
+    max-width: 140px;
+  }
+}
+@media (min-width: 440px) {
+  .messageContainer {
+    max-width: 300px;
+  }
+}
+@media (min-width: 675px) {
+  .messageContainer {
+    max-width: 400px;
+  }
+}
+@media (min-width: 1200px) {
+  .messageContainer {
+    max-width: 800px;
+  }
+}
+.labelStyles {
+  opacity: 0.8;
+  text-decoration: wavy;
+  font-size: 10px;
+  transform: translateY(-5px);
+}
+
+.displayMessage {
+  line-height: 22px !important;
+}
+.usernameStyles {
+  color: #79bcfa;
+}
+/* //background-color: #79bcfa; */
