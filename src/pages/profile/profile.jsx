@@ -639,6 +639,29 @@ const Profile = () => {
                   )}
                   <hr />
                   <hr />
+                  <div className="guides">
+                    <div className="guidesItem">
+                      <IonIcon
+                        className="guidesIcon"
+                        icon={settingsOutline}
+                      ></IonIcon>
+                      <IonLabel> Settings View </IonLabel>
+                    </div>
+                    <div className="guidesItem">
+                      <IonIcon
+                        className="guidesIcon"
+                        icon={caretUpCircle}
+                      ></IonIcon>
+                      <IonLabel> Update Data </IonLabel>
+                    </div>
+                    <div className="guidesItem">
+                      <IonIcon
+                        className="guidesIcon"
+                        icon={cloudUploadOutline}
+                      ></IonIcon>
+                      <IonLabel> Change Profile Picture </IonLabel>
+                    </div>
+                  </div>
                 </>
               ) : (
                 <>
@@ -751,7 +774,7 @@ const Profile = () => {
                   </div>
                   <hr />
                   <hr />
-                  <IonButton color="dark" onClick={singOut} expand="block">
+                  <IonButton color="primary" onClick={singOut} expand="block">
                     Sign Out
                   </IonButton>
                   <IonButton color="danger" expand="block" onClick={deleteData}>

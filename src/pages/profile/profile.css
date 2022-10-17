@@ -87,3 +87,19 @@ ion-label {
 .redToast {
   --background: var(--ion-color-danger) !important;
 }
+.guides {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.guidesItem {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  opacity: 0.8;
+}
+.guidesIcon {
+  font-size: 20px;
+  opacity: 1 !important;
+}
