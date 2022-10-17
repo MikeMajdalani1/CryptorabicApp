@@ -24,16 +24,27 @@ import {
   setDoc,
   limit,
   doc,
+  getDocs,
+  where,
   onSnapshot,
 } from 'firebase/firestore';
-import { sendSharp } from 'ionicons/icons';
+import { sendSharp, arrowRedoCircleSharp } from 'ionicons/icons';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { getAuth } from 'firebase/auth';
 const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setnewMessage] = useState('');
   const dbCollection = collection(database, 'messages');
   const bottomListRef = useRef();
+  const auth = getAuth();
+  const [user] = useAuthState(auth);
+  const [name, setName] = useState('');
+  const [label, setLabel] = useState('');
+
   useEffect(() => {
     if (database) {
+      fetchData();
+
       const q = query(collection(database, 'messages'), orderBy('createdAt'));
 
       const unsub = onSnapshot(q, (res) => {
@@ -49,6 +60,24 @@ const Chat = () => {
       bottomListRef.current.scrollIntoView({ behavior: 'smooth' });
     }, 1000);
   }, []);
+
+  const fetchData = async () => {
+    try {
+      const q = query(
+        collection(database, 'users'),
+        where('__name__', '==', user?.uid)
+      );
+      const doc = await getDocs(q);
+
+      const data = doc.docs[0].data();
+
+      setName(data.username);
+      setLabel(data.label);
+    } catch (err) {
+      console.error(err);
+      alert('An error occured while fetching user data');
+    }
+  };
   const handleOnChange = (e) => {
     if (e.target.value === '') {
       setnewMessage('');
@@ -68,6 +97,9 @@ const Chat = () => {
       await setDoc(doc(dbCollection), {
         text: newMessage.trim(),
         createdAt: serverTimestamp(),
+        uid: user.uid,
+        name: name,
+        label: label,
       });
       setnewMessage('');
       console.log('Document Created');
@@ -83,6 +115,15 @@ const Chat = () => {
       <IonHeader>
         <Header />
       </IonHeader>
+      <div className="pinContainer">
+        <IonLabel color="primary">Pinned Message</IonLabel>
+        <div className="subPin">
+          <IonIcon icon={arrowRedoCircleSharp} />
+          <IonLabel>
+            <IonLabel color="primary">User: </IonLabel> message we we we w e
+          </IonLabel>
+        </div>
+      </div>
       <IonContent>
         <div className="chatroom">
           {messages.map((message, i) => {
@@ -92,8 +133,9 @@ const Chat = () => {
                   key={i}
                   displayMessage={message.text}
                   time={message.createdAt}
-                  username="Mike"
-                  label="Hero"
+                  username={message.name}
+                  label={message.label}
+                  isCurrentUser={user.uid === message.uid}
                 />
               </div>
             );

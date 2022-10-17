@@ -9,7 +9,12 @@
   flex-direction: row;
   gap: 20px;
 }
-
+.reverseRow {
+  flex-direction: row-reverse;
+}
+.justifyEnd {
+  align-items: flex-end;
+}
 .messageContainer {
   display: flex;
   flex-direction: column;
@@ -62,7 +67,7 @@
 /* //background-color: #79bcfa; */
 .flexRow {
   display: flex;
-  flex-direction: row;
+
   align-items: center;
   gap: 5px;
 }

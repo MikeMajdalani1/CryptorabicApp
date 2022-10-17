@@ -24,3 +24,20 @@
 .iconDisbaled {
   opacity: 0.5;
 }
+.pinContainer {
+  padding: 15px 20px;
+  box-shadow: 0 0 3rem #286ab7;
+  /* border-top: 0.2rem inset #286ab7; */
+
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.subPin {
+  opacity: 0.8;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+}
