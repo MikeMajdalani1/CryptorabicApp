@@ -1,6 +1,26 @@
 .chatroom {
-  padding: 0 10px;
+  padding: 10px 10px;
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+.messageInput {
+  border-radius: 20px;
+}
+.messageInputContainer {
+  padding: 5px 20px;
+  box-shadow: 0 0 3rem #286ab7;
+  border-top: 0.2rem inset #286ab7;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 6fr 0.5fr;
+  align-items: center;
+  justify-content: center;
+}
+.sharpIcon {
+  font-size: 20px;
+  color: white;
+}
+.iconDisbaled {
+  opacity: 0.5;
 }

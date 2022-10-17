@@ -51,7 +51,6 @@
   opacity: 0.8;
   text-decoration: wavy;
   font-size: 10px;
-  transform: translateY(-5px);
 }
 
 .displayMessage {
@@ -61,3 +60,13 @@
   color: #79bcfa;
 }
 /* //background-color: #79bcfa; */
+.flexRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+}
+.bottomList {
+  height: 20px;
+  width: 100%;
+}

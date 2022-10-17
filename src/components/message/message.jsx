@@ -21,13 +21,19 @@ function Message({ profilePic, displayMessage, username, time, label }) {
           <img alt="Silhouette of a person's head" src="assets/joenassar.png" />
         </IonAvatar>
         <div className="messageContainer">
-          <IonLabel className="usernameStyles">{username}</IonLabel>
-          <IonLabel className="labelStyles"> {label}</IonLabel>
-          <IonLabel className="displayMessage">
-            {' '}
-            {displayMessage}
-            {/*  {formatDate(new Date(time.seconds * 1000))} */}
-          </IonLabel>
+          <div className="flexRow">
+            <IonLabel className="usernameStyles">{username} </IonLabel>{' '}
+            <IonLabel className="labelStyles"> ({label})</IonLabel>
+          </div>
+          {displayMessage ? (
+            <IonLabel className="displayMessage"> {displayMessage}</IonLabel>
+          ) : null}
+          {time?.seconds ? (
+            <IonLabel className="labelStyles">
+              {' '}
+              {formatDate(new Date(time?.seconds * 1000))}
+            </IonLabel>
+          ) : null}
         </div>
       </div>
     </>

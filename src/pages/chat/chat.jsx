@@ -5,64 +5,78 @@ import {
   IonList,
   IonLabel,
   IonPage,
+  IonItem,
+  IonInput,
+  IonIcon,
 } from '@ionic/react';
 import Message from '../../components/message/message';
 import Header from '../../components/header/header';
 import './chat.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { formatRelative } from 'date-fns';
-import { database } from '../../utils/firebaseConfig';
+import { app, database } from '../../utils/firebaseConfig';
+
 import {
-  getDocs,
+  serverTimestamp,
   query,
   collection,
   orderBy,
+  setDoc,
   limit,
+  doc,
   onSnapshot,
 } from 'firebase/firestore';
+import { sendSharp } from 'ionicons/icons';
 const Chat = () => {
-  const collectionDb = collection(database, 'messages');
   const [messages, setMessages] = useState([]);
-  const formatDate = (date) => {
-    let formattedDate = '';
-    if (date) {
-      // Convert the date in words relative to the current date
-      formattedDate = formatRelative(date, new Date());
-      // Uppercase the first letter
-      formattedDate =
-        formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
-    }
-    return formattedDate;
-  };
-
-  const fetchData = async () => {
-    try {
-      const q = query(
-        collection(database, 'messages'),
-        orderBy('createdAt'),
-        limit(200)
-      );
-      const doc = await getDocs(q);
-      console.log(doc);
-      const data = doc.docs[0].data();
-      console.log(data);
-      setMessages(data);
-    } catch (err) {
-      console.error(err);
-      alert('An error occured while fetching user data');
-    }
-  };
+  const [newMessage, setnewMessage] = useState('');
+  const dbCollection = collection(database, 'messages');
+  const bottomListRef = useRef();
   useEffect(() => {
     if (database) {
       const q = query(collection(database, 'messages'), orderBy('createdAt'));
 
       const unsub = onSnapshot(q, (res) => {
-        setMessages(res.docs.map((snap) => snap.data().text));
+        setMessages(res.docs.map((snap) => snap.data()));
       });
       console.log(messages);
       return unsub;
     }
   }, [database]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      bottomListRef.current.scrollIntoView({ behavior: 'smooth' });
+    }, 1000);
+  }, []);
+  const handleOnChange = (e) => {
+    if (e.target.value === '') {
+      setnewMessage('');
+    }
+
+    setnewMessage(e.target.value);
+  };
+  const sendMessage = async (e) => {
+    e.preventDefault();
+
+    if (newMessage === '') {
+      return;
+    }
+    const date = serverTimestamp();
+    console.log(date);
+    try {
+      await setDoc(doc(dbCollection), {
+        text: newMessage.trim(),
+        createdAt: serverTimestamp(),
+      });
+      setnewMessage('');
+      console.log('Document Created');
+
+      bottomListRef.current.scrollIntoView({ behavior: 'smooth' });
+    } catch (error) {
+      alert(error.message);
+    }
+  };
 
   return (
     <IonPage>
@@ -72,12 +86,12 @@ const Chat = () => {
       <IonContent>
         <div className="chatroom">
           {messages.map((message, i) => {
-            console.log(i);
             return (
               <div key={i}>
                 <Message
                   key={i}
-                  displayMessage={message}
+                  displayMessage={message.text}
+                  time={message.createdAt}
                   username="Mike"
                   label="Hero"
                 />
@@ -85,7 +99,29 @@ const Chat = () => {
             );
           })}
         </div>
+        <div className="bottomList" ref={bottomListRef} />
       </IonContent>
+
+      <div className="messageInputContainer">
+        <IonItem>
+          <IonInput
+            className="messageInput"
+            name="message"
+            value={newMessage}
+            placeholder="Enter a message"
+            onIonChange={handleOnChange}
+          ></IonInput>
+        </IonItem>
+
+        <div onClick={sendMessage}>
+          <IonIcon
+            className={
+              newMessage === '' ? 'iconDisbaled sharpIcon' : 'sharpIcon'
+            }
+            icon={sendSharp}
+          ></IonIcon>
+        </div>
+      </div>
     </IonPage>
   );
 };
