@@ -95,9 +95,9 @@ const Profile = () => {
     return image;
   };
 
-  const singOut = () => {
-    signOut(auth);
-    history.replace('/login');
+  const singOut = async () => {
+    await signOut(auth);
+    history.replace('/');
     window.location.reload();
   };
 
@@ -135,6 +135,12 @@ const Profile = () => {
       console.log(ProfileInputs);
     } catch (err) {
       console.error(err);
+      presentToast({
+        message: 'An Error has occured, restart the app',
+        duration: 3000,
+        icon: alertOutline,
+        cssClass: 'redToast',
+      });
       alert('An error occured while fetching user data');
     }
   };
@@ -506,7 +512,7 @@ const Profile = () => {
         console.log(res);
         try {
           await user.delete();
-          history.replace('/login');
+          history.replace('/');
           window.location.reload();
         } catch (error) {
           console.log(error.message);

@@ -23,6 +23,7 @@ const Tabs: React.FC = () => {
           <Route path="/tabs/academy" component={Academy} exact={true} />
           <Route path="/tabs/chat" component={Chat} exact={true} />
           <Route path="/tabs/profile" component={Profile} exact={true} />
+          <Route path="/" component={Academy} exact={true} />
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           {/* <IonTabButton tab="Info" href="/tabs/info">

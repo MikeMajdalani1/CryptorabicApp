@@ -113,7 +113,7 @@ const Login = () => {
       });
       console.log('Document Created');
     } catch (error) {
-      history.replace('/login');
+      history.replace('/');
       alert(error.message);
     }
   };
