@@ -52,7 +52,7 @@ const Profile = () => {
   const [user, loading, error] = useAuthState(auth);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
+
   const [label, setLabel] = useState('');
   const [photo, setPhoto] = useState('/');
   const [settingsTrigger, setsettingsTrigger] = useState(false);
@@ -67,7 +67,6 @@ const Profile = () => {
     password: '',
   });
 
-  const [presentAlert] = useIonAlert();
   const [reAuth] = useIonAlert();
   const [presentToast] = useIonToast();
 
@@ -126,7 +125,7 @@ const Profile = () => {
 
       setName(data.username);
       setPhone(data.phone);
-      setEmail(data.email);
+
       setLabel(data.label);
       setProfileInputs({
         email: auth.currentUser.email,

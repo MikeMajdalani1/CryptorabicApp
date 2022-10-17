@@ -107,9 +107,9 @@ const Login = () => {
     try {
       await setDoc(doc(db, user.uid), {
         username: RegisterInputs.username,
-        email: RegisterInputs.email,
         phone: RegisterInputs.phone,
         label: 'New User',
+        role: 'normal',
       });
       console.log('Document Created');
     } catch (error) {
