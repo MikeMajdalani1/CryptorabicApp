@@ -55,3 +55,27 @@ export const deleteData = async (database, id) => {
 //       alert(err.message);
 //     }
 //   };
+
+// const reAuthenticate = async (password) => {
+//   const credential = EmailAuthProvider.credential(
+//     auth.currentUser.email,
+//     password
+//   );
+//   try {
+//     const res = await reauthenticateWithCredential(
+//       auth.currentUser,
+//       credential
+//     );
+//     console.log(res);
+//     setResolved(true);
+//   } catch (error) {
+//     console.log('ReAuth error' + error.message);
+//     setResolved(false);
+//     presentToast({
+//       message: 'Wrong Password',
+//       duration: 1500,
+//       icon: alertOutline,
+//       cssClass: 'redToast',
+//     });
+//   }
+// };

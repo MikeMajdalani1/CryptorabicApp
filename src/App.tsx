@@ -1,19 +1,6 @@
 import { Redirect, Route } from 'react-router-dom';
-import {
-  IonApp,
-  IonIcon,
-  IonRouterOutlet,
-  IonTabBar,
-  IonTabButton,
-  IonTabs,
-  setupIonicReact,
-} from '@ionic/react';
+import { IonApp, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { chatbubbleEllipses, person, newspaper, school } from 'ionicons/icons';
-import Info from './pages/info/info';
-import Academy from './pages/academy/academy';
-import Chat from './pages/chat/chat';
-import Profile from './pages/profile/profile';
 
 import Login from './pages/authenticate/login/login';
 import Tabs from './tabs';

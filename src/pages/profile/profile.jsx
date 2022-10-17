@@ -10,8 +10,6 @@ import {
   IonButton,
   IonIcon,
   useIonToast,
-  IonAccordion,
-  IonAccordionGroup,
 } from '@ionic/react';
 import {
   getAuth,
@@ -48,8 +46,6 @@ import {
 } from 'ionicons/icons';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
-import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript';
-import { async } from '@firebase/util';
 
 const Profile = () => {
   const auth = getAuth();
@@ -147,23 +143,6 @@ const Profile = () => {
     fetchData();
   }, []);
 
-  const deleteData = async () => {
-    let dataToDelete = doc(database, 'users', user?.uid);
-    try {
-      const res = await deleteDoc(dataToDelete);
-      console.log(res);
-      try {
-        await user.delete();
-        history.replace('/login');
-        window.location.reload();
-      } catch (error) {
-        alert(error.message);
-      }
-    } catch (error) {
-      alert(error.message);
-    }
-  };
-
   const updateData = async (field) => {
     let dataToUpdate = doc(database, 'users', user?.uid);
     switch (field) {
@@ -181,7 +160,7 @@ const Profile = () => {
           });
           break;
         }
-        if (email === ProfileInputs.email) {
+        if (auth.currentUser.email === ProfileInputs.email) {
           presentToast({
             message: 'Same email address got provided',
             duration: 1500,
@@ -217,7 +196,7 @@ const Profile = () => {
               {
                 text: 'Confirm',
                 role: 'confirm',
-                handler: (alertData) => {
+                handler: async (alertData) => {
                   const oldPassword = alertData.oldPassword;
                   console.log(oldPassword);
                   if (oldPassword === '') {
@@ -229,14 +208,27 @@ const Profile = () => {
                     });
                     return false;
                   } else {
-                    reAuthenticate(oldPassword);
-                    _changeEmail(ProfileInputs.email);
+                    const credential = EmailAuthProvider.credential(
+                      auth.currentUser.email,
+                      oldPassword
+                    );
+                    try {
+                      const res = await reauthenticateWithCredential(
+                        auth.currentUser,
+                        credential
+                      );
+                      console.log(res);
+                      _changeEmail(ProfileInputs.email);
+                    } catch (error) {
+                      console.log('ReAuth error' + error.message);
 
-                    presentToast({
-                      message: 'Email Address Changed',
-                      duration: 1500,
-                      icon: checkmarkCircleOutline,
-                    });
+                      presentToast({
+                        message: 'Wrong Password',
+                        duration: 1500,
+                        icon: alertOutline,
+                        cssClass: 'redToast',
+                      });
+                    }
                   }
                 },
               },
@@ -350,6 +342,7 @@ const Profile = () => {
         message: 'Please enter a new password if you wish to change it',
         duration: 2500,
         icon: alertOutline,
+        cssClass: 'redToast',
       });
     } else {
       reAuth({
@@ -395,19 +388,39 @@ const Profile = () => {
       });
     }
   };
-  const _changePassword = async (oldPassword, newPassword) => {
-    reAuthenticate(oldPassword);
-    try {
-      const res = await updatePassword(auth.currentUser, newPassword);
-      console.log(res);
 
-      presentToast({
-        message: 'Password Changed Successfully',
-        duration: 1500,
-        icon: alertOutline,
-      });
+  const _changePassword = async (oldPassword, newPassword) => {
+    const credential = EmailAuthProvider.credential(
+      auth.currentUser.email,
+      oldPassword
+    );
+    try {
+      const res = await reauthenticateWithCredential(
+        auth.currentUser,
+        credential
+      );
+      console.log(res);
+      try {
+        const res = await updatePassword(auth.currentUser, newPassword);
+        console.log(res);
+
+        presentToast({
+          message: 'Password Changed Successfully',
+          duration: 2500,
+          icon: checkmarkCircleOutline,
+        });
+      } catch (error) {
+        console.log('UpdatePassword error' + error.message);
+        presentToast({
+          message: 'Wrong Password',
+          duration: 1500,
+          icon: alertOutline,
+          cssClass: 'redToast',
+        });
+      }
     } catch (error) {
-      console.log('UpdatePassword error' + error.message);
+      console.log('ReAuth error' + error.message);
+
       presentToast({
         message: 'Wrong Password',
         duration: 1500,
@@ -418,17 +431,70 @@ const Profile = () => {
   };
 
   const _changeEmail = async (newEmail) => {
+    console.log(newEmail);
     try {
       const res = await updateEmail(user, newEmail);
       console.log(res);
+      presentToast({
+        message: 'Email Updated',
+        duration: 1500,
+        icon: checkmarkCircleOutline,
+      });
     } catch (error) {
       console.log(error.message);
     }
   };
-  const reAuthenticate = async (password) => {
+
+  const deleteData = async () => {
+    reAuth({
+      header: 'Attention',
+      message: 'Enter your current password to proceed',
+
+      inputs: [
+        {
+          name: 'oldPassword',
+          placeholder: 'Password',
+        },
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {},
+        },
+        {
+          text: 'Confirm',
+          role: 'confirm',
+          handler: (alertData) => {
+            const oldPassword = alertData.oldPassword;
+            console.log(oldPassword);
+            if (oldPassword === '') {
+              presentToast({
+                message: 'Please enter your current password',
+                duration: 2000,
+                icon: alertOutline,
+                cssClass: 'redToast',
+              });
+              return false;
+            } else {
+              _deleteData(oldPassword);
+            }
+          },
+        },
+      ],
+      onDidDismiss: () => {
+        console.log('dismised');
+        SetPasswordInput({ password: '' });
+      },
+    });
+  };
+
+  const _deleteData = async (oldPassword) => {
+    let dataToDelete = doc(database, 'users', user?.uid);
+
     const credential = EmailAuthProvider.credential(
       auth.currentUser.email,
-      password
+      oldPassword
     );
     try {
       const res = await reauthenticateWithCredential(
@@ -436,8 +502,34 @@ const Profile = () => {
         credential
       );
       console.log(res);
+      try {
+        const res = await deleteDoc(dataToDelete);
+        console.log(res);
+        try {
+          await user.delete();
+          history.replace('/login');
+          window.location.reload();
+        } catch (error) {
+          console.log(error.message);
+          presentToast({
+            message: 'Error accured, please contact admins',
+            duration: 1500,
+            icon: alertOutline,
+            cssClass: 'redToast',
+          });
+        }
+      } catch (error) {
+        console.log(error.message);
+        presentToast({
+          message: 'Error accured, please contact admins',
+          duration: 1500,
+          icon: alertOutline,
+          cssClass: 'redToast',
+        });
+      }
     } catch (error) {
       console.log('ReAuth error' + error.message);
+
       presentToast({
         message: 'Wrong Password',
         duration: 1500,
@@ -446,6 +538,7 @@ const Profile = () => {
       });
     }
   };
+
   return (
     <IonPage>
       <IonHeader>
@@ -661,32 +754,7 @@ const Profile = () => {
                   <IonButton color="dark" onClick={singOut} expand="block">
                     Sign Out
                   </IonButton>
-                  <IonButton
-                    color="danger"
-                    expand="block"
-                    onClick={() =>
-                      presentAlert({
-                        header: 'Alert',
-                        message:
-                          'Are you sure you want to delete your account?',
-                        buttons: [
-                          {
-                            text: 'Cancel',
-                            role: 'cancel',
-                            handler: () => {},
-                          },
-                          {
-                            text: 'Delete',
-                            role: 'confirm',
-                            handler: () => {
-                              deleteData();
-                            },
-                          },
-                        ],
-                        onDidDismiss: () => console.log('dismiised'),
-                      })
-                    }
-                  >
+                  <IonButton color="danger" expand="block" onClick={deleteData}>
                     Delete Account
                   </IonButton>
                 </>

@@ -7,33 +7,23 @@ import {
   IonHeader,
   IonContent,
   IonToolbar,
-  IonTitle,
   IonIcon,
   IonLabel,
 } from '@ionic/react';
-import React, { useContext, useEffect, useState, useRef } from 'react';
-import { UserContext } from '../../../App';
+import { useState, useRef } from 'react';
+
 import { useAuthState } from 'react-firebase-hooks/auth';
 import './login.css';
 import { useHistory } from 'react-router-dom';
 
-import { IonReactRouter } from '@ionic/react-router';
-
-import { app, database } from '../../../utils/firebaseConfig';
+import { database } from '../../../utils/firebaseConfig';
 import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
 } from 'firebase/auth';
-import {
-  collection,
-  setDoc,
-  getDocs,
-  doc,
-  updateDoc,
-  deleteDoc,
-} from 'firebase/firestore';
+import { collection, setDoc, doc } from 'firebase/firestore';
 import { closeOutline } from 'ionicons/icons';
 const Login = () => {
   const auth = getAuth();
