@@ -27,7 +27,7 @@
 .pinContainer {
   padding: 15px 20px;
   box-shadow: 0 0 3rem #286ab7;
-  /* border-top: 0.2rem inset #286ab7; */
+  border-bottom: 0.2rem outset #286ab7;
 
   color: white;
   display: flex;

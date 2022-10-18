@@ -13,7 +13,7 @@ import Message from '../../components/message/message';
 import Header from '../../components/header/header';
 import './chat.css';
 import { useState, useEffect, useRef } from 'react';
-import { formatRelative } from 'date-fns';
+import Skeleton from 'react-loading-skeleton';
 import { app, database } from '../../utils/firebaseConfig';
 
 import {
@@ -27,8 +27,10 @@ import {
   getDocs,
   where,
   onSnapshot,
+  limitToLast,
 } from 'firebase/firestore';
-import { sendSharp, arrowRedoCircleSharp } from 'ionicons/icons';
+import { useIonToast } from '@ionic/react';
+import { sendSharp, arrowRedoCircleSharp, alertOutline } from 'ionicons/icons';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { getAuth } from 'firebase/auth';
 const Chat = () => {
@@ -37,20 +39,27 @@ const Chat = () => {
   const dbCollection = collection(database, 'messages');
   const bottomListRef = useRef();
   const auth = getAuth();
-  const [user] = useAuthState(auth);
+  const [presentToast] = useIonToast();
+
+  const [user, loading] = useAuthState(auth);
   const [name, setName] = useState('');
   const [label, setLabel] = useState('');
-
+  const [admin, setAdmin] = useState('');
+  const [pinnedMessage, setPinnedMessage] = useState({
+    createdAt: '',
+    text: '',
+    name: '',
+  });
   useEffect(() => {
     if (database) {
-      fetchData();
-
+      fetchUserData();
+      fetchPinnedMessage();
       const q = query(collection(database, 'messages'), orderBy('createdAt'));
 
       const unsub = onSnapshot(q, (res) => {
         setMessages(res.docs.map((snap) => snap.data()));
       });
-      console.log(messages);
+
       return unsub;
     }
   }, [database]);
@@ -61,7 +70,7 @@ const Chat = () => {
     }, 1000);
   }, []);
 
-  const fetchData = async () => {
+  const fetchUserData = async () => {
     try {
       const q = query(
         collection(database, 'users'),
@@ -73,9 +82,43 @@ const Chat = () => {
 
       setName(data.username);
       setLabel(data.label);
+      setAdmin(data.isAdmin);
     } catch (err) {
-      console.error(err);
-      alert('An error occured while fetching user data');
+      console.error(err.message);
+      presentToast({
+        message: 'An Error has occured, restart the app',
+        duration: 2000,
+        icon: alertOutline,
+        cssClass: 'redToast',
+      });
+    }
+  };
+
+  const fetchPinnedMessage = async () => {
+    try {
+      const q = query(
+        collection(database, 'pinned'),
+        orderBy('createdAt'),
+        limitToLast(1)
+      );
+
+      const unsub = onSnapshot(q, (res) => {
+        console.log();
+        setPinnedMessage({
+          text: res.docs[0].data().text,
+          createAt: res.docs[0].data().createAt,
+          name: res.docs[0].data().name,
+        });
+      });
+
+      return unsub;
+    } catch (err) {
+      console.error(err.message);
+      setPinnedMessage({
+        text: 'Welcome to the Chat!',
+        createAt: '',
+        name: 'Admin',
+      });
     }
   };
   const handleOnChange = (e) => {
@@ -91,8 +134,7 @@ const Chat = () => {
     if (newMessage === '') {
       return;
     }
-    const date = serverTimestamp();
-    console.log(date);
+
     try {
       await setDoc(doc(dbCollection), {
         text: newMessage.trim(),
@@ -100,13 +142,20 @@ const Chat = () => {
         uid: user.uid,
         name: name,
         label: label,
+        isAdmin: admin,
       });
       setnewMessage('');
       console.log('Document Created');
 
       bottomListRef.current.scrollIntoView({ behavior: 'smooth' });
     } catch (error) {
-      alert(error.message);
+      console.log(error.message);
+      presentToast({
+        message: 'An Error has occured, restart the app',
+        duration: 2000,
+        icon: alertOutline,
+        cssClass: 'redToast',
+      });
     }
   };
 
@@ -117,12 +166,24 @@ const Chat = () => {
       </IonHeader>
       <div className="pinContainer">
         <IonLabel color="primary">Pinned Message</IonLabel>
-        <div className="subPin">
-          <IonIcon icon={arrowRedoCircleSharp} />
-          <IonLabel>
-            <IonLabel color="primary">User: </IonLabel> message we we we w e
-          </IonLabel>
-        </div>
+
+        {pinnedMessage.name ? (
+          <>
+            <div className="subPin">
+              <IonIcon icon={arrowRedoCircleSharp} />
+              <IonLabel>
+                <IonLabel color="primary">{pinnedMessage.name}: </IonLabel>{' '}
+                {pinnedMessage.text}
+              </IonLabel>
+            </div>
+          </>
+        ) : (
+          <Skeleton
+            baseColor="#102835"
+            highlightColor="#286ab7"
+            duration={1.3}
+          />
+        )}
       </div>
       <IonContent>
         <div className="chatroom">
@@ -135,6 +196,7 @@ const Chat = () => {
                   time={message.createdAt}
                   username={message.name}
                   label={message.label}
+                  isAdmin={admin}
                   isCurrentUser={user.uid === message.uid}
                 />
               </div>

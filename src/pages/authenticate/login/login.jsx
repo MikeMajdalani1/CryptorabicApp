@@ -109,7 +109,7 @@ const Login = () => {
         username: RegisterInputs.username,
         phone: RegisterInputs.phone,
         label: 'New User',
-        role: 'normal',
+        isAdmin: false,
       });
       console.log('Document Created');
     } catch (error) {
