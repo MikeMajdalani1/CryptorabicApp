@@ -26,6 +26,9 @@ ion-toast {
 .alert-message {
   padding-bottom: 0 !important;
 }
+.swiper .swiper-slide img {
+  width: 40px !important;
+}
 h2 {
   font-size: 20px;
   font-weight: 600;
@@ -37,8 +40,8 @@ h2 {
 .native-input[type='date']::-webkit-calendar-picker-indicator {
   filter: invert(1);
 }
-.ion-input[type='date']::before {
-}
+/* .ion-input[type='date']::before {
+} */
 :host {
 }
 /** Ionic CSS Variables **/

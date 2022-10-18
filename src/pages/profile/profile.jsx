@@ -34,7 +34,7 @@ import { useHistory } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useState, useEffect } from 'react';
 import { database } from '../../utils/firebaseConfig';
-import { Puff } from 'react-loader-spinner';
+
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import {
   cloudUploadOutline,
@@ -568,22 +568,21 @@ const Profile = () => {
               >
                 <IonIcon icon={cloudUploadOutline} />
               </div>
+
               {name ? (
                 <IonLabel className="username">{name}</IonLabel>
               ) : (
-                <Puff
-                  height="38"
-                  width="38"
-                  radius={1}
-                  color="#fff"
-                  ariaLabel="puff-loading"
-                  wrapperStyle={{}}
-                  wrapperClass=""
-                  visible={true}
-                />
+                <div className="skeletonForName">
+                  <Skeleton
+                    baseColor="#102835"
+                    highlightColor="#286ab7"
+                    duration={1.3}
+                  />
+                </div>
               )}
             </div>
           </div>
+
           <div className="detailscontainer">
             <div className="detailslist">
               <div

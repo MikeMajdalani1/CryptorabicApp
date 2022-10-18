@@ -5,3 +5,4 @@
 -- fix loading of the messages in DB, restruct logic
 -- password lenght and inner field validations for label
 -- integrate images into chat
+- optimize on iphone and android 

@@ -3,7 +3,7 @@ import {
   IonHeader,
   IonPage,
   IonTitle,
-  IonToolbar,
+  IonSpinner,
   IonCard,
   IonCardContent,
   IonCardTitle,
@@ -16,7 +16,6 @@ import './news.css';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { fetchArticles } from '../../../utils/fetchArticles';
-import { Puff } from 'react-loader-spinner';
 
 const News = () => {
   const [articles, setArticles] = useState();
@@ -35,20 +34,21 @@ const News = () => {
     <IonPage>
       <IonContent>
         {articles === undefined ? (
-          <Puff
-            height="50"
-            width="50"
-            radisu={1}
-            color="#fff"
-            ariaLabel="puff-loading"
-            wrapperStyle={{
-              justifyContent: 'center',
-              alignContent: 'center',
-            }}
-            wrapperClass=""
-            visible={true}
-          />
+          <IonSpinner name="crescent"></IonSpinner>
         ) : (
+          // <Puff
+          //   height="50"
+          //   width="50"
+          //   radisu={1}
+          //   color="#fff"
+          //   ariaLabel="puff-loading"
+          //   wrapperStyle={{
+          //     justifyContent: 'center',
+          //     alignContent: 'center',
+          //   }}
+          //   wrapperClass=""
+          //   visible={true}
+          // />
           articles.map((article, i) => {
             if (i < 20 && article.urlToImage != null)
               return (

@@ -2,7 +2,7 @@ import {
   IonButton,
   IonContent,
   IonHeader,
-  IonList,
+  IonSpinner,
   IonLabel,
   IonPage,
   IonItem,
@@ -33,6 +33,7 @@ import { useIonToast } from '@ionic/react';
 import { sendSharp, arrowRedoCircleSharp, alertOutline } from 'ionicons/icons';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { getAuth } from 'firebase/auth';
+
 const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setnewMessage] = useState('');
@@ -187,21 +188,27 @@ const Chat = () => {
       </div>
       <IonContent>
         <div className="chatroom">
-          {messages.map((message, i) => {
-            return (
-              <div key={i}>
-                <Message
-                  key={i}
-                  displayMessage={message.text}
-                  time={message.createdAt}
-                  username={message.name}
-                  label={message.label}
-                  isAdmin={admin}
-                  isCurrentUser={user.uid === message.uid}
-                />
-              </div>
-            );
-          })}
+          {messages[0] ? (
+            messages.map((message, i) => {
+              return (
+                <div key={i}>
+                  <Message
+                    key={i}
+                    displayMessage={message.text}
+                    time={message.createdAt}
+                    username={message.name}
+                    label={message.label}
+                    isAdmin={admin}
+                    isCurrentUser={user.uid === message.uid}
+                  />
+                </div>
+              );
+            })
+          ) : (
+            <div className="loaderSpinner">
+              <IonSpinner name="crescent"></IonSpinner>
+            </div>
+          )}
         </div>
         <div className="bottomList" ref={bottomListRef} />
       </IonContent>

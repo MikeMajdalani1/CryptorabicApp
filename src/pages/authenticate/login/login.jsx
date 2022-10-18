@@ -173,13 +173,13 @@ const Login = () => {
   }
 
   return (
-    <div className="container paddingLeftRight">
-      <div className="info">
-        <div className="logoandtext">
+    <div className="paddingLeftRight">
+      <div className="loginContainer">
+        <div className="FormLogoAndText">
           <img alt="logo" width={120} height={120} src="assets/logofalet.png" />
           <h3>Be part of our beloved crypto community by signing in</h3>
         </div>
-        <form className="form">
+        <form className="formContainer">
           {autherror && <IonLabel className="autherror">{autherror}</IonLabel>}
           <div className="withError">
             <IonItem className="border">
@@ -238,8 +238,8 @@ const Login = () => {
         </IonHeader>
         <IonContent>
           <div className="paddingLeftRight">
-            <div className="infoRegister">
-              <div className="logoandtext">
+            <div className="RegisterContainer">
+              <div className="FormLogoAndText">
                 <img
                   alt="logo"
                   width={120}
@@ -252,7 +252,7 @@ const Login = () => {
                 </h3>
               </div>
               <IonItem>
-                <div className="form">
+                <div className="formContainer">
                   <IonItem className="border">
                     <IonInput
                       name="username"

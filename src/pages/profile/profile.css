@@ -103,3 +103,6 @@ ion-label {
   font-size: 20px;
   opacity: 1 !important;
 }
+.skeletonForName {
+  width: 70%;
+}
