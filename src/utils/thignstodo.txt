@@ -1,8 +1,11 @@
 - Spalsh Screen
 - Login/Regitser validations
-- Wehn switching from tab to tab to reset data of Login
--Upload image of profile, front and back
--- fix loading of the messages in DB, restruct logic
--- password lenght and inner field validations for label
--- integrate images into chat
+- When switching from tab to tab to reset data of Login
+- Upload image of profile, front and back
+- fix loading of the messages in DB, restruct logic
+- password lenght and inner field validations for 'label'
+- integrate images into chat
 - optimize on iphone and android 
+- integrate like and comments on signals
+- integrate pinned messages all of them
+- Crypto news free API?

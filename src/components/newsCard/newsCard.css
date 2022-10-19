@@ -1,13 +1,13 @@
 ion-card-title {
   font-weight: 700;
-  font-family: "Titillium Web", "Open Sans", "sans-serif";
+  font-family: 'Titillium Web', 'Open Sans', 'sans-serif';
   text-transform: uppercase;
   letter-spacing: 2px;
   color: white;
   padding: 20px 10px;
 }
 ion-card-content {
-  font-family: "Titillium Web", "Open Sans", "sans-serif";
+  font-family: 'Titillium Web', 'Open Sans', 'sans-serif';
   font-size: 10px;
   font-weight: 600;
   color: #79bcfa;

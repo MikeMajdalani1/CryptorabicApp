@@ -17,13 +17,22 @@ function CryptoCard({ coinImage, coinName, coinAbrev, price, marketChange }) {
         </div>
         <div></div>
         <div className="cryptoCardInfoRow">
-          <IonLabel className="FontSizeMod">Price:</IonLabel>
+          <IonLabel style={{ opacity: 0.7 }} className="FontSizeMod">
+            Price:
+          </IonLabel>
           <IonLabel className="FontSizeMod">${price}</IonLabel>
         </div>
         <div className="cryptoCardInfoRow">
           {' '}
-          <IonLabel className="FontSizeMod">24h:</IonLabel>
-          <IonLabel className="FontSizeMod">{marketChange}%</IonLabel>
+          <IonLabel style={{ opacity: 0.7 }} className="FontSizeMod">
+            24h:
+          </IonLabel>
+          <IonLabel
+            color={marketChange < 0 ? 'danger' : 'success'}
+            className="FontSizeMod"
+          >
+            {marketChange}%
+          </IonLabel>
         </div>
       </div>
     </>

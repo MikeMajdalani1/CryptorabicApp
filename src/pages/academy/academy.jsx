@@ -8,6 +8,8 @@ import 'swiper/swiper.min.css';
 import '@ionic/react/css/ionic-swiper.css';
 import { useWindowWidth } from '@react-hook/window-size';
 import { useEffect, useState } from 'react';
+import NewsCard from '../../components/newsCard/newsCard';
+import SignalCard from '../../components/signalCard/signalCard';
 
 const Academy = () => {
   const onlyWidth = useWindowWidth();
@@ -39,6 +41,8 @@ const Academy = () => {
     } else if (592 < onlyWidth && onlyWidth < 832) {
       setnumberOfSlides(3);
       return;
+    } else if (onlyWidth > 1200) {
+      setnumberOfSlides(6);
     } else {
       setnumberOfSlides(4);
       return;
@@ -71,6 +75,11 @@ const Academy = () => {
                 );
               })}
           </Swiper>
+          <div className="seperatorDiv"></div>
+          <div className="seperatorDiv"></div>
+          <IonLabel className="header1">Signals</IonLabel>
+          <div className="seperatorDiv"></div>
+          <SignalCard></SignalCard>
         </div>
       </IonContent>
     </IonPage>

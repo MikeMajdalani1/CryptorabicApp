@@ -1,0 +1,103 @@
+.signalCardContainer {
+  padding: 20px;
+  background-color: #17394b;
+  border-radius: 10px;
+  gap: 20px;
+  max-width: 600px;
+  width: 100%;
+  height: 100%;
+  color: white;
+  align-items: flex-start;
+  justify-items: center;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.singalCardInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+.singalCardRate {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+.singalCardRisk {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+.singalCardUser {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+}
+.singalCardDirection {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+.singalCardTPs {
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+}
+.singalCardTP {
+  opacity: 0.8;
+}
+.fixLineHeight {
+  line-height: 20px;
+  text-align: center;
+}
+
+.greenish {
+  color: #2fdf75;
+}
+.redish {
+  color: #ff4961;
+}
+.yellowish {
+  color: #ffc409;
+}
+
+@media (max-width: 360px) {
+  .signalCardContainer {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .singalCardTPs {
+    grid-column: 1/-1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(auto);
+  }
+  .singalCardInfo {
+    align-items: center;
+  }
+  .fixLineHeight {
+    text-align: center;
+  }
+  .singalCardRate {
+    align-items: center;
+  }
+}
+@media (max-width: 270px) {
+  .signalCardContainer {
+    grid-template-columns: auto;
+  }
+  .singalCardTPs {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .singalCardInfo {
+    gap: 10px;
+  }
+}
+
+@media (min-width: 423px) {
+  .signalCardContainer {
+    align-items: flex-start;
+  }
+}

@@ -15,6 +15,7 @@ function Message({
   label,
   isCurrentUser,
   isAdmin,
+  displayStar,
 }) {
   const [presentToast] = useIonToast();
   const formatDate = (date) => {
@@ -72,7 +73,7 @@ function Message({
       <div className={`messageContainer ${isCurrentUser && 'justifyEnd'}`}>
         <div className={`flexRow ${isCurrentUser && 'reverseRow'}`}>
           <IonLabel className="usernameStyles">{username} </IonLabel>{' '}
-          {isAdmin ? (
+          {displayStar ? (
             <IonIcon className="starIcon" icon={star}></IonIcon>
           ) : null}
           <IonLabel className="labelStyles"> ({label})</IonLabel>

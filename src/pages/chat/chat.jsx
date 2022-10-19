@@ -200,6 +200,7 @@ const Chat = () => {
                     label={message.label}
                     isAdmin={admin}
                     isCurrentUser={user.uid === message.uid}
+                    displayStar={message.isAdmin}
                   />
                 </div>
               );
