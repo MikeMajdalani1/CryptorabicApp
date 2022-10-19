@@ -60,9 +60,9 @@ const Academy = () => {
 
           <Swiper slidesPerView={numberOfSlides} spaceBetween={20}>
             {coins &&
-              Object.values(coins).map((coin) => {
+              Object.values(coins).map((coin, i) => {
                 return (
-                  <SwiperSlide>
+                  <SwiperSlide key={i}>
                     {' '}
                     <CryptoCard
                       coinImage={coin.image}
@@ -80,6 +80,11 @@ const Academy = () => {
           <IonLabel className="header1">Signals</IonLabel>
           <div className="seperatorDiv"></div>
           <SignalCard></SignalCard>
+          <div className="seperatorDiv"></div>
+          <div className="seperatorDiv"></div>
+          <IonLabel className="header1"> Updates </IonLabel>
+          <div className="seperatorDiv"></div>
+          <NewsCard title="hello" description="hello oe " linkURL="sas" />
         </div>
       </IonContent>
     </IonPage>

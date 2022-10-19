@@ -4,7 +4,8 @@ ion-card-title {
   text-transform: uppercase;
   letter-spacing: 2px;
   color: white;
-  padding: 20px 10px;
+  padding: 20px 20px;
+  font-size: 20px;
 }
 ion-card-content {
   font-family: 'Titillium Web', 'Open Sans', 'sans-serif';
@@ -14,12 +15,11 @@ ion-card-content {
   opacity: 0.8;
   line-height: 16px;
   letter-spacing: 2px;
-  padding: 0 10px 20px 10px !important;
+  padding: 0 20px 20px 20px !important;
 }
 ion-card {
-  margin: 50px 20px;
-
-  box-shadow: 0 0 30px #286ab7;
+  background-color: #17394b;
+  border-radius: 10px;
 }
 .checknews {
   color: white;
