@@ -1,5 +1,5 @@
 import {
-  IonButton,
+  IonSkeletonText,
   IonContent,
   IonHeader,
   IonSpinner,
@@ -13,7 +13,7 @@ import Message from '../../components/message/message';
 import Header from '../../components/header/header';
 import './chat.css';
 import { useState, useEffect, useRef } from 'react';
-import Skeleton from 'react-loading-skeleton';
+
 import { app, database } from '../../utils/firebaseConfig';
 
 import {
@@ -179,11 +179,10 @@ const Chat = () => {
             </div>
           </>
         ) : (
-          <Skeleton
-            baseColor="#102835"
-            highlightColor="#286ab7"
-            duration={1.3}
-          />
+          <IonSkeletonText
+            animated={true}
+            style={{ height: '20px', width: '40%' }}
+          ></IonSkeletonText>
         )}
       </div>
       <IonContent>

@@ -5,7 +5,7 @@
   gap: 20px;
   max-width: 600px;
   width: 100%;
-  height: 100%;
+  height: 160px;
   color: white;
   align-items: flex-start;
   justify-items: center;
@@ -16,7 +16,7 @@
 .singalCardInfo {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px;
   align-items: center;
 }
 .singalCardRate {
@@ -68,6 +68,7 @@
   .signalCardContainer {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    height: 100%;
   }
   .singalCardTPs {
     grid-column: 1/-1;
@@ -88,6 +89,7 @@
 @media (max-width: 270px) {
   .signalCardContainer {
     grid-template-columns: auto;
+    height: 100%;
   }
   .singalCardTPs {
     grid-template-columns: repeat(2, 1fr);
@@ -100,5 +102,11 @@
 @media (min-width: 423px) {
   .signalCardContainer {
     align-items: flex-start;
+  }
+}
+
+@media (min-width: 640px) {
+  .signalCardContainer {
+    height: 170px;
   }
 }

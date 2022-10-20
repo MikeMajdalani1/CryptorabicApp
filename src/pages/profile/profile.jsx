@@ -10,6 +10,7 @@ import {
   IonButton,
   IonIcon,
   useIonToast,
+  IonSkeletonText,
 } from '@ionic/react';
 import {
   getAuth,
@@ -44,8 +45,6 @@ import {
   settings,
   caretUpCircle,
 } from 'ionicons/icons';
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
 
 const Profile = () => {
   const auth = getAuth();
@@ -570,13 +569,10 @@ const Profile = () => {
               {name ? (
                 <IonLabel className="username">{name}</IonLabel>
               ) : (
-                <div className="skeletonForName">
-                  <Skeleton
-                    baseColor="#102835"
-                    highlightColor="#286ab7"
-                    duration={1.3}
-                  />
-                </div>
+                <IonSkeletonText
+                  animated={true}
+                  style={{ height: '30px', width: '70%' }}
+                ></IonSkeletonText>
               )}
             </div>
           </div>
@@ -593,7 +589,7 @@ const Profile = () => {
                 <>
                   {' '}
                   <IonLabel>Email Address</IonLabel>
-                  {phone ? (
+                  {phone && auth.currentUser ? (
                     <IonItem>
                       <IonInput
                         name="email"
@@ -602,12 +598,10 @@ const Profile = () => {
                       ></IonInput>
                     </IonItem>
                   ) : (
-                    <Skeleton
-                      baseColor="#102835"
-                      highlightColor="#286ab7"
-                      duration={1.3}
-                      className="skeleton"
-                    />
+                    <IonSkeletonText
+                      style={{ height: '48px' }}
+                      animated={true}
+                    ></IonSkeletonText>
                   )}
                   <hr />
                   <hr />
@@ -617,12 +611,10 @@ const Profile = () => {
                       <IonInput value={phone} name="phone" disabled></IonInput>
                     </IonItem>
                   ) : (
-                    <Skeleton
-                      baseColor="#102835"
-                      highlightColor="#286ab7"
-                      duration={1.3}
-                      className="skeleton"
-                    />
+                    <IonSkeletonText
+                      style={{ height: '48px' }}
+                      animated={true}
+                    ></IonSkeletonText>
                   )}
                   <hr />
                   <hr />
@@ -632,12 +624,10 @@ const Profile = () => {
                       <IonInput name="label" value={label} disabled></IonInput>
                     </IonItem>
                   ) : (
-                    <Skeleton
-                      baseColor="#102835"
-                      highlightColor="#286ab7"
-                      duration={1.3}
-                      className="skeleton"
-                    />
+                    <IonSkeletonText
+                      style={{ height: '48px' }}
+                      animated={true}
+                    ></IonSkeletonText>
                   )}
                   <hr />
                   <hr />
@@ -681,12 +671,10 @@ const Profile = () => {
                         ></IonInput>
                       </IonItem>
                     ) : (
-                      <Skeleton
-                        baseColor="#102835"
-                        highlightColor="#286ab7"
-                        duration={1.3}
-                        className="skeleton"
-                      />
+                      <IonSkeletonText
+                        style={{ height: '48px' }}
+                        animated={true}
+                      ></IonSkeletonText>
                     )}
                     <div
                       className="updateIcon"
@@ -710,12 +698,10 @@ const Profile = () => {
                         ></IonInput>
                       </IonItem>
                     ) : (
-                      <Skeleton
-                        baseColor="#102835"
-                        highlightColor="#286ab7"
-                        duration={1.3}
-                        className="skeleton"
-                      />
+                      <IonSkeletonText
+                        style={{ height: '48px' }}
+                        animated={true}
+                      ></IonSkeletonText>
                     )}
                     <div
                       className="updateIcon"
@@ -739,12 +725,10 @@ const Profile = () => {
                         ></IonInput>
                       </IonItem>
                     ) : (
-                      <Skeleton
-                        baseColor="#102835"
-                        highlightColor="#286ab7"
-                        duration={1.3}
-                        className="skeleton"
-                      />
+                      <IonSkeletonText
+                        style={{ height: '48px' }}
+                        animated={true}
+                      ></IonSkeletonText>
                     )}
                     <div
                       className="updateIcon"

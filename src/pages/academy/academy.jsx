@@ -16,8 +16,8 @@ import {
   IonRadioGroup,
   IonList,
   IonRadio,
-  IonSpinner,
   IonTextarea,
+  IonSkeletonText,
 } from '@ionic/react';
 import CryptoCard from '../../components/cryptoCard/cryptoCard';
 import { formatRelative } from 'date-fns';
@@ -62,7 +62,8 @@ import { getAuth } from 'firebase/auth';
 
 const Academy = () => {
   const onlyWidth = useWindowWidth();
-  const [numberOfSlides, setnumberOfSlides] = useState(2);
+  const [numberOfSlidesCoins, setnumberOfSlidesCoins] = useState(2);
+  const [numberOfSlidesSignals, setnumberOfSlidesSignals] = useState(2);
   const URL =
     'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20';
   const [admin, setAdmin] = useState('');
@@ -74,6 +75,7 @@ const Academy = () => {
   const [isNewslModalOpen, setNewslModalOpen] = useState(false);
   const [signals, setSignals] = useState([]);
   const [news, setNews] = useState([]);
+  const [showSekelton, setShowSkeleton] = useState(true);
   const [SignalInputs, setSignalInputs] = useState({
     market: '',
     stoploss: '',
@@ -102,24 +104,39 @@ const Academy = () => {
   }, [database]);
 
   useEffect(() => {
+    setTimeout(() => {
+      setShowSkeleton(false);
+    }, 1500);
     fetchUserData();
     fetcher(URL);
   }, []);
 
   useEffect(() => {
     if (onlyWidth < 384) {
-      setnumberOfSlides(1);
+      setnumberOfSlidesCoins(1);
       return;
     } else if (384 < onlyWidth && onlyWidth < 592) {
-      setnumberOfSlides(2);
+      setnumberOfSlidesCoins(2);
       return;
     } else if (592 < onlyWidth && onlyWidth < 832) {
-      setnumberOfSlides(3);
+      setnumberOfSlidesCoins(3);
+
       return;
     } else if (onlyWidth > 1200) {
-      setnumberOfSlides(6);
+      setnumberOfSlidesCoins(6);
     } else {
-      setnumberOfSlides(4);
+      setnumberOfSlidesCoins(4);
+      return;
+    }
+  }, [onlyWidth]);
+  useEffect(() => {
+    if (onlyWidth < 635) {
+      setnumberOfSlidesSignals(1);
+    } else if (634 < onlyWidth && onlyWidth < 1200) {
+      setnumberOfSlidesSignals(2);
+      return;
+    } else if (onlyWidth > 1200) {
+      setnumberOfSlidesSignals(3);
       return;
     }
   }, [onlyWidth]);
@@ -236,6 +253,7 @@ const Academy = () => {
       const unsub = onSnapshot(q, (res) => {
         setSignals(res.docs);
       });
+      console.log(signals);
 
       return unsub;
     } catch (err) {
@@ -366,8 +384,8 @@ const Academy = () => {
           <IonLabel className="header1">Popular Coins</IonLabel>
           <div className="seperatorDiv"></div>
 
-          <Swiper slidesPerView={numberOfSlides} spaceBetween={20}>
-            {coins &&
+          <Swiper slidesPerView={numberOfSlidesCoins} spaceBetween={20}>
+            {coins ? (
               Object.values(coins).map((coin, i) => {
                 return (
                   <SwiperSlide key={i}>
@@ -380,7 +398,13 @@ const Academy = () => {
                     ></CryptoCard>
                   </SwiperSlide>
                 );
-              })}
+              })
+            ) : (
+              <IonSkeletonText
+                animated={true}
+                style={{ height: '170px', width: '100%' }}
+              ></IonSkeletonText>
+            )}
           </Swiper>
           <div className="seperatorDiv"></div>
           <div className="seperatorDiv"></div>
@@ -401,43 +425,49 @@ const Academy = () => {
           </div>
 
           <div className="seperatorDiv"></div>
-          <Swiper slidesPerView={1} spaceBetween={20}>
-            {signals
-              ? signals.map((signal, i) => {
-                  const data = signal.data();
-                  const dataID = signal.id;
-                  return (
-                    <>
-                      <SwiperSlide className="swiperSignal" key={i}>
-                        {data.createdAt ? (
-                          <div className="signalDateAndTrash">
-                            <IonLabel className="signalDate">
-                              {formatDate(
-                                new Date(data.createdAt.seconds * 1000)
-                              )}
-                            </IonLabel>
-                            {admin ? (
-                              <IonIcon
-                                onClick={() => HandleDelete('signals', dataID)}
-                                icon={trash}
-                              />
-                            ) : null}
-                          </div>
-                        ) : null}
-                        <SignalCard
-                          key={i}
-                          market={data.market}
-                          tps={data.tps}
-                          stoploss={data.stoploss}
-                          entry={data.entry}
-                          risk={data.risk}
-                          position={data.position}
-                        />
-                      </SwiperSlide>
-                    </>
-                  );
-                })
-              : null}
+
+          <Swiper slidesPerView={numberOfSlidesSignals} spaceBetween={20}>
+            {signals.length !== 0 ? (
+              signals.map((signal, i) => {
+                const data = signal.data();
+                const dataID = signal.id;
+                return (
+                  <>
+                    <SwiperSlide className="swiperSignal" key={i}>
+                      {!data.createdAt ? (
+                        <div className="signalDateAndTrash">
+                          <IonLabel className="signalDate">
+                            {formatDate(
+                              new Date(data.createdAt.seconds * 1000)
+                            )}
+                          </IonLabel>
+                          {admin ? (
+                            <IonIcon
+                              onClick={() => HandleDelete('signals', dataID)}
+                              icon={trash}
+                            />
+                          ) : null}
+                        </div>
+                      ) : null}
+                      <SignalCard
+                        key={i}
+                        market={data.market}
+                        tps={data.tps}
+                        stoploss={data.stoploss}
+                        entry={data.entry}
+                        risk={data.risk}
+                        position={data.position}
+                      />
+                    </SwiperSlide>
+                  </>
+                );
+              })
+            ) : (
+              <IonSkeletonText
+                animated={true}
+                style={{ height: '170px', width: '100%' }}
+              ></IonSkeletonText>
+            )}
           </Swiper>
 
           <div className="seperatorDiv"></div>
@@ -457,32 +487,37 @@ const Academy = () => {
           </div>
           <div className="seperatorDiv"></div>
 
-          {news
-            ? news.map((newsChild, i) => {
-                const data = newsChild.data();
-                const dataID = newsChild.id;
-                return (
-                  <>
-                    {admin && (
-                      <div className="newsTrash">
-                        <div></div>
-                        <IonIcon
-                          onClick={() => HandleDelete('news', dataID)}
-                          icon={trash}
-                        />
-                      </div>
-                    )}
-                    <NewsCard
-                      title={data.title}
-                      description={data.content}
-                      linkURL={data.link}
-                      createdAt={data.createdAt}
-                    />
-                    <div className="seperatorDiv"></div>
-                  </>
-                );
-              })
-            : null}
+          {news.length !== 0 ? (
+            news.map((newsChild, i) => {
+              const data = newsChild.data();
+              const dataID = newsChild.id;
+              return (
+                <>
+                  {admin && (
+                    <div className="newsTrash">
+                      <div></div>
+                      <IonIcon
+                        onClick={() => HandleDelete('news', dataID)}
+                        icon={trash}
+                      />
+                    </div>
+                  )}
+                  <NewsCard
+                    title={data.title}
+                    description={data.content}
+                    linkURL={data.link}
+                    createdAt={data.createdAt}
+                  />
+                  <div className="seperatorDiv"></div>
+                </>
+              );
+            })
+          ) : (
+            <IonSkeletonText
+              animated={true}
+              style={{ height: '170px', width: '100%' }}
+            ></IonSkeletonText>
+          )}
         </div>
       </IonContent>
 

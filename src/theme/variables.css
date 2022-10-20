@@ -14,6 +14,12 @@ http://ionicframework.com/docs/theming/ */
 ion-toast {
   --background: #79bcfa;
 }
+ion-skeleton-text {
+  --background: #286ab7;
+  --background-rgb: 40, 106, 183;
+  --border-radius: 20px;
+}
+
 .alert-wrapper {
   display: flex;
   flex-direction: column;
@@ -139,7 +145,7 @@ h2 {
     --ion-color-primary-contrast: #ffffff;
     --ion-color-primary-contrast-rgb: 255, 255, 255;
     --ion-color-primary-shade: #3a7be0;
-    --ion-color-primary-tint: #5598ff;
+    --ion-color-primary-tint: #254472;
 
     --ion-color-secondary: #50c8ff;
     --ion-color-secondary-rgb: 80, 200, 255;
