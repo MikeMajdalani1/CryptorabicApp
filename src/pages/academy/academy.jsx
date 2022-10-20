@@ -17,6 +17,7 @@ import {
   IonList,
   IonRadio,
   IonSpinner,
+  IonTextarea,
 } from '@ionic/react';
 import CryptoCard from '../../components/cryptoCard/cryptoCard';
 import { formatRelative } from 'date-fns';
@@ -37,6 +38,7 @@ import {
   closeOutline,
   trendingUp,
   trash,
+  newspaper,
   checkmarkCircleOutline,
 } from 'ionicons/icons';
 import { useIonToast } from '@ionic/react';
@@ -69,9 +71,9 @@ const Academy = () => {
   const auth = getAuth();
   const [user] = useAuthState(auth);
   const [isSignalModalOpen, setSignalModalOpen] = useState(false);
-
+  const [isNewslModalOpen, setNewslModalOpen] = useState(false);
   const [signals, setSignals] = useState([]);
-
+  const [news, setNews] = useState([]);
   const [SignalInputs, setSignalInputs] = useState({
     market: '',
     stoploss: '',
@@ -81,9 +83,21 @@ const Academy = () => {
     tps: ['', '', '', ''],
   });
 
+  const [NewsInputs, setNewsInputs] = useState({
+    title: '',
+    content: '',
+    link: '',
+  });
+
   useEffect(() => {
     if (database) {
       fetchSignals();
+    }
+  }, [database]);
+
+  useEffect(() => {
+    if (database) {
+      fetchNews();
     }
   }, [database]);
 
@@ -120,6 +134,13 @@ const Academy = () => {
         formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
     }
     return formattedDate;
+  };
+
+  const handleNewsChange = (e) => {
+    setNewsInputs((previousState) => ({
+      ...previousState,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   const handlePositionChange = (e) => {
@@ -181,6 +202,29 @@ const Academy = () => {
     }
   };
 
+  const fetchNews = async () => {
+    try {
+      const q = query(
+        collection(database, 'news'),
+        orderBy('createdAt', 'desc'),
+        limit(25)
+      );
+
+      const unsub = onSnapshot(q, (res) => {
+        setNews(res.docs);
+      });
+
+      return unsub;
+    } catch (err) {
+      console.error(err.message);
+      presentToast({
+        message: 'An Error has occured, restart the app',
+        duration: 2000,
+        icon: alertOutline,
+        cssClass: 'redToast',
+      });
+    }
+  };
   const fetchSignals = async () => {
     try {
       const q = query(
@@ -205,6 +249,37 @@ const Academy = () => {
     }
   };
 
+  const handleNewsRegiser = async (e) => {
+    e.preventDefault();
+
+    if (NewsInputs.title === '' || NewsInputs.content === '') {
+      presentToast({
+        message: 'The market input is required!',
+        duration: 4000,
+        icon: alertOutline,
+        cssClass: 'redToast',
+      });
+    } else {
+      try {
+        await setDoc(doc(collection(database, 'news')), {
+          title: NewsInputs.title,
+          content: NewsInputs.content,
+          link: NewsInputs.link,
+          createdAt: serverTimestamp(),
+        });
+        setNewslModalOpen(false);
+        console.log('document created');
+      } catch (error) {
+        console.log(error.message);
+        presentToast({
+          message: 'An Error has occured, restart the app',
+          duration: 2000,
+          icon: alertOutline,
+          cssClass: 'redToast',
+        });
+      }
+    }
+  };
   const handleSignalRegister = async (e) => {
     e.preventDefault();
     if (SignalInputs.market === '') {
@@ -247,20 +322,19 @@ const Academy = () => {
     }
   };
 
-  const HandleSignalDelete = async (id) => {
-    let dataToDelete = doc(database, 'signals', id);
+  const HandleDelete = async (collection, id) => {
+    let dataToDelete = doc(database, collection, id);
 
     try {
       const res = await deleteDoc(dataToDelete);
 
-      console.log(res);
       presentToast({
-        message: 'Signal Successfully Updated',
+        message: 'Successfully Updated',
         duration: 1500,
         icon: checkmarkCircleOutline,
       });
     } catch (error) {
-      console.log('Deleting signal error' + error.message);
+      console.log('Deleting error' + error.message);
       presentToast({
         message: 'Error Updating Data',
         duration: 1500,
@@ -342,10 +416,12 @@ const Academy = () => {
                                 new Date(data.createdAt.seconds * 1000)
                               )}
                             </IonLabel>
-                            <IonIcon
-                              onClick={() => HandleSignalDelete(dataID)}
-                              icon={trash}
-                            />
+                            {admin ? (
+                              <IonIcon
+                                onClick={() => HandleDelete('signals', dataID)}
+                                icon={trash}
+                              />
+                            ) : null}
                           </div>
                         ) : null}
                         <SignalCard
@@ -368,10 +444,45 @@ const Academy = () => {
           <div className="seperatorDiv"></div>
           <div className="AddSection">
             <IonLabel className="header1">News</IonLabel>
-            {admin ? <IonButton color="primary">Add</IonButton> : <div></div>}
+            {admin ? (
+              <IonButton
+                onClick={() => setNewslModalOpen(true)}
+                color="primary"
+              >
+                Add
+              </IonButton>
+            ) : (
+              <div></div>
+            )}
           </div>
           <div className="seperatorDiv"></div>
-          <NewsCard title="hello" description="hello oe " linkURL="sas" />
+
+          {news
+            ? news.map((newsChild, i) => {
+                const data = newsChild.data();
+                const dataID = newsChild.id;
+                return (
+                  <>
+                    {admin && (
+                      <div className="newsTrash">
+                        <div></div>
+                        <IonIcon
+                          onClick={() => HandleDelete('news', dataID)}
+                          icon={trash}
+                        />
+                      </div>
+                    )}
+                    <NewsCard
+                      title={data.title}
+                      description={data.content}
+                      linkURL={data.link}
+                      createdAt={data.createdAt}
+                    />
+                    <div className="seperatorDiv"></div>
+                  </>
+                );
+              })
+            : null}
         </div>
       </IonContent>
 
@@ -524,8 +635,89 @@ const Academy = () => {
                 </div>
               </IonItem>
               <IonLabel class="disclaimer">
+                * Required Field
+                <br />
+                <br />
                 Please not that in this version of the app, you can't update a
                 signal after it is published
+              </IonLabel>
+            </div>
+          </div>
+        </IonContent>
+      </IonModal>
+
+      <IonModal
+        isOpen={isNewslModalOpen}
+        content="container"
+        onWillDismiss={() => {
+          setNewsInputs({
+            title: '',
+            content: '',
+            link: '',
+          });
+        }}
+      >
+        <IonHeader>
+          <IonToolbar>
+            <IonButtons slot="start">
+              <IonButton onClick={() => setNewslModalOpen(false)}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent>
+          <div className="newsModalContainer">
+            <div className="RegisterContainer">
+              <div className="FormLogoAndText">
+                <IonIcon
+                  style={{ fontSize: '60px' }}
+                  icon={newspaper}
+                ></IonIcon>
+                <h3>Add News</h3>
+              </div>
+              <IonItem>
+                <div className="formContainer">
+                  <IonItem className="border">
+                    <IonInput
+                      name="title"
+                      value={NewsInputs.title}
+                      placeholder="* Title"
+                      required
+                      onIonInput={handleNewsChange}
+                    ></IonInput>
+                  </IonItem>
+
+                  <IonItem className="border">
+                    <IonTextarea
+                      value={NewsInputs.content}
+                      name="content"
+                      placeholder="* Content"
+                      autoGrow
+                      onIonChange={handleNewsChange}
+                    ></IonTextarea>
+                  </IonItem>
+                  <IonItem className="border">
+                    <IonInput
+                      value={NewsInputs.link}
+                      name="link"
+                      placeholder="Link"
+                      onIonInput={handleNewsChange}
+                    ></IonInput>
+                  </IonItem>
+
+                  <IonButton size="large" onClick={handleNewsRegiser}>
+                    Add News
+                  </IonButton>
+                </div>
+              </IonItem>
+
+              <IonLabel class="disclaimer">
+                * Required Field
+                <br />
+                <br />
+                Please not that in this version of the app, you can't update
+                your news after it is published
               </IonLabel>
             </div>
           </div>

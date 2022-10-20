@@ -8,7 +8,7 @@ import {
   IonTabs,
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { chatbubbleEllipses, person, newspaper, school } from 'ionicons/icons';
+import { chatbubbleEllipses, person, newspaper } from 'ionicons/icons';
 
 import Academy from './pages/academy/academy';
 import Chat from './pages/chat/chat';

@@ -158,7 +158,7 @@ const Login = () => {
   };
 
   return (
-    <div className="paddingLeftRight">
+    <div className="centerPage">
       <div className="loginContainer">
         <div className="FormLogoAndText">
           <img alt="logo" width={120} height={120} src="assets/logofalet.png" />
@@ -219,7 +219,7 @@ const Login = () => {
           </IonToolbar>
         </IonHeader>
         <IonContent>
-          <div className="paddingLeftRight">
+          <div className="centerPage">
             <div className="RegisterContainer">
               <div className="FormLogoAndText">
                 <img

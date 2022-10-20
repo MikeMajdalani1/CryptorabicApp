@@ -24,6 +24,9 @@
   .signalModalContainer {
     padding: 0 20px;
   }
+  .newsModalContainer {
+    padding: 20px;
+  }
 }
 .listofTps {
   display: grid;
@@ -44,4 +47,18 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
+}
+.newsModalContainer {
+  padding: 20px 40px;
+
+  text-align: center;
+  margin: 0 auto;
+  width: 100%;
+}
+.newsTrashIcon {
+}
+.newsTrash {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 0;
 }
