@@ -30,6 +30,7 @@ const Login = () => {
   const db = collection(database, 'users');
   const history = useHistory();
   const [user, loading, error] = useAuthState(auth);
+  const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
   const [loginErrors, setloginErrors] = useState({
     email: '',
     password: '',
@@ -89,6 +90,7 @@ const Login = () => {
   };
 
   const handleRegister = async () => {
+    setRegisterModalOpen(false);
     let res;
     try {
       res = await createUserWithEmailAndPassword(
@@ -98,7 +100,7 @@ const Login = () => {
       );
 
       console.log('User Created');
-      modal.current?.dismiss();
+
       history.replace('/tabs/academy');
     } catch (error) {
       alert(error.message);
@@ -155,23 +157,6 @@ const Login = () => {
     }
   };
 
-  const modal = useRef();
-  const input = useRef();
-
-  const [message, setMessage] = useState(
-    'This modal example uses triggers to automatically open a modal when the button is clicked.'
-  );
-
-  function confirm() {
-    modal.current?.dismiss(input.current?.value, 'confirm');
-  }
-
-  function onWillDismiss(ev) {
-    if (ev.detail.role === 'confirm') {
-      setMessage(`Hello, ${ev.detail.data}!`);
-    }
-  }
-
   return (
     <div className="paddingLeftRight">
       <div className="loginContainer">
@@ -218,19 +203,16 @@ const Login = () => {
 
         <div className="signup">
           <h4> New to Cryptorabic?</h4>{' '}
-          <IonButton id="open-modal">Sign Up</IonButton>
+          <IonButton onClick={() => setRegisterModalOpen(true)}>
+            Sign Up
+          </IonButton>
         </div>
       </div>
-      <IonModal
-        ref={modal}
-        trigger="open-modal"
-        content="container"
-        onWillDismiss={(ev) => onWillDismiss(ev)}
-      >
+      <IonModal isOpen={isRegisterModalOpen} content="container">
         <IonHeader>
           <IonToolbar>
             <IonButtons slot="start">
-              <IonButton onClick={() => modal.current?.dismiss()}>
+              <IonButton onClick={() => setRegisterModalOpen(false)}>
                 <IonIcon icon={closeOutline} />
               </IonButton>
             </IonButtons>

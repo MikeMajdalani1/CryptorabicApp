@@ -7,3 +7,41 @@
 .seperatorDiv {
   height: 30px;
 }
+.AddSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.signalModalContainer {
+  padding: 0 40px;
+
+  text-align: center;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media (max-width: 314px) {
+  .signalModalContainer {
+    padding: 0 20px;
+  }
+}
+.listofTps {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.swiperSignal {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.signalDate {
+  font-size: 13px;
+  opacity: 0.8;
+}
+.signalDateAndTrash {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}

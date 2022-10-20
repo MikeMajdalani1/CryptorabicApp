@@ -9,3 +9,8 @@
 - integrate like and comments on signals
 - integrate pinned messages all of them
 - Crypto news free API?
+- Edit news info
+- Implement Password reset
+- Verify Email
+- test of user send message then deleted his account what happens to the chat?
+- modify rules in firestore

@@ -98,7 +98,6 @@ const Profile = () => {
   const singOut = async () => {
     await signOut(auth);
     history.replace('/');
-    window.location.reload();
   };
 
   const handleProfileChange = (e) => {
@@ -513,7 +512,6 @@ const Profile = () => {
         try {
           await user.delete();
           history.replace('/');
-          window.location.reload();
         } catch (error) {
           console.log(error.message);
           presentToast({

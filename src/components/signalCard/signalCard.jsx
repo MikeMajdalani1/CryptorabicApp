@@ -9,14 +9,13 @@ import {
   skull,
 } from 'ionicons/icons';
 const SignalCard = ({
-  marketName,
-  tpArray = ['20345', '20345', '20345', '20345'],
-  StopLoss,
+  market,
+  tps = ['20345', '20345', '20345', '20345'],
+  stoploss,
   risk = 'medium',
-  direction = 'short',
-  Entry,
-  AdminName,
-  AdminAvatar,
+  position = 'short',
+  entry,
+  adminAvatar,
 }) => {
   return (
     <>
@@ -28,17 +27,17 @@ const SignalCard = ({
           </IonAvatar>
 
           <div
-            className={`singalCardDirection ${
-              direction === 'long' ? 'greenish' : 'redish'
+            className={`singalCardposition ${
+              position === 'long' ? 'greenish' : 'redish'
             }`}
           >
             <IonIcon
-              icon={direction === 'long' ? trendingUp : trendingDown}
+              icon={position === 'long' ? trendingUp : trendingDown}
             ></IonIcon>
-            <IonLabel>{direction === 'long' ? 'Long' : 'Short'}</IonLabel>
+            <IonLabel>{position === 'long' ? 'Long' : 'Short'}</IonLabel>
           </div>
           <div
-            className={`singalCardDirection ${risk === 'low' && 'greenish'} ${
+            className={`singalCardposition ${risk === 'low' && 'greenish'} ${
               risk === 'medium' && 'yellowish'
             } ${risk === 'high' && 'redish'}`}
           >
@@ -54,20 +53,20 @@ const SignalCard = ({
           </div>
         </div>
         <div className="singalCardInfo">
-          <IonLabel>BTC/USDT</IonLabel>
+          <IonLabel>{market}</IonLabel>
           <IonLabel className="fixLineHeight">
             {' '}
-            <IonLabel style={{ opacity: 0.8 }}>Entry:</IonLabel> 20
+            <IonLabel style={{ opacity: 0.8 }}>Entry:</IonLabel> {entry}
           </IonLabel>
           <IonLabel className="fixLineHeight">
             {' '}
-            <IonLabel style={{ opacity: 0.8 }}>Stop Loss:</IonLabel> 21
+            <IonLabel style={{ opacity: 0.8 }}>Stop Loss:</IonLabel> {stoploss}
           </IonLabel>
         </div>
 
         <div className="singalCardTPs">
           <IonLabel>TPs:</IonLabel>
-          {tpArray.map((tp, i) => {
+          {tps.map((tp, i) => {
             return (
               <>
                 <IonLabel className="singalCardTP" key={i}>
