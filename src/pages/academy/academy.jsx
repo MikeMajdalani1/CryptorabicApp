@@ -71,6 +71,7 @@ const Academy = () => {
   const [isSignalModalOpen, setSignalModalOpen] = useState(false);
 
   const [signals, setSignals] = useState([]);
+
   const [SignalInputs, setSignalInputs] = useState({
     market: '',
     stoploss: '',
@@ -189,7 +190,7 @@ const Academy = () => {
       );
 
       const unsub = onSnapshot(q, (res) => {
-        setSignals(res.docs.map((snap) => snap.data()));
+        setSignals(res.docs);
       });
 
       return unsub;
@@ -206,43 +207,48 @@ const Academy = () => {
 
   const handleSignalRegister = async (e) => {
     e.preventDefault();
-
-    try {
-      await setDoc(
-        doc(
-          collection(database, 'signals'),
-          `${SignalInputs.market}_${SignalInputs.entry}_${SignalInputs.stoploss}`
-        ),
-        {
-          market: SignalInputs.market,
-          createdAt: serverTimestamp(),
-          stoploss: SignalInputs.stoploss,
-          entry: SignalInputs.entry,
-          tps: SignalInputs.tps,
-          risk: SignalInputs.risk,
-          position: SignalInputs.position,
-        }
-      );
-      setSignalModalOpen(false);
-
-      console.log('Document Created');
-    } catch (error) {
-      console.log(error.message);
+    if (SignalInputs.market === '') {
       presentToast({
-        message: 'An Error has occured, restart the app',
-        duration: 2000,
+        message: 'The market input is required!',
+        duration: 4000,
         icon: alertOutline,
         cssClass: 'redToast',
       });
+    } else {
+      try {
+        await setDoc(doc(collection(database, 'signals')), {
+          market: SignalInputs.market,
+          createdAt: serverTimestamp(),
+          stoploss:
+            SignalInputs.stoploss === ''
+              ? 'Not Specified'
+              : SignalInputs.stoploss,
+          entry:
+            SignalInputs.entry === '' ? 'Not Specified' : SignalInputs.entry,
+          tps:
+            SignalInputs.tps[0] === ''
+              ? ['Not Specifed', '', '', '']
+              : SignalInputs.tps,
+          risk: SignalInputs.risk,
+          position: SignalInputs.position,
+        });
+        setSignalModalOpen(false);
+
+        console.log('Document Created');
+      } catch (error) {
+        console.log(error.message);
+        presentToast({
+          message: 'An Error has occured, restart the app',
+          duration: 2000,
+          icon: alertOutline,
+          cssClass: 'redToast',
+        });
+      }
     }
   };
 
-  const HandleSignalDelete = async (market, entry, stoploss) => {
-    let dataToDelete = doc(
-      database,
-      'signals',
-      `${market}_${entry}_${stoploss}`
-    );
+  const HandleSignalDelete = async (id) => {
+    let dataToDelete = doc(database, 'signals', id);
 
     try {
       const res = await deleteDoc(dataToDelete);
@@ -322,38 +328,34 @@ const Academy = () => {
 
           <div className="seperatorDiv"></div>
           <Swiper slidesPerView={1} spaceBetween={20}>
-            {signals[0]
+            {signals
               ? signals.map((signal, i) => {
+                  const data = signal.data();
+                  const dataID = signal.id;
                   return (
                     <>
                       <SwiperSlide className="swiperSignal" key={i}>
-                        {signal.createdAt ? (
+                        {data.createdAt ? (
                           <div className="signalDateAndTrash">
                             <IonLabel className="signalDate">
                               {formatDate(
-                                new Date(signal.createdAt.seconds * 1000)
+                                new Date(data.createdAt.seconds * 1000)
                               )}
                             </IonLabel>
                             <IonIcon
-                              onClick={() =>
-                                HandleSignalDelete(
-                                  signal.market,
-                                  signal.entry,
-                                  signal.stoploss
-                                )
-                              }
+                              onClick={() => HandleSignalDelete(dataID)}
                               icon={trash}
                             />
                           </div>
                         ) : null}
                         <SignalCard
                           key={i}
-                          market={signal.market}
-                          tps={signal.tps}
-                          stoploss={signal.stoploss}
-                          entry={signal.entry}
-                          risk={signal.risk}
-                          position={signal.position}
+                          market={data.market}
+                          tps={data.tps}
+                          stoploss={data.stoploss}
+                          entry={data.entry}
+                          risk={data.risk}
+                          position={data.position}
                         />
                       </SwiperSlide>
                     </>
@@ -412,7 +414,7 @@ const Academy = () => {
                     <IonInput
                       name="market"
                       value={SignalInputs.market}
-                      placeholder="Market"
+                      placeholder="* Market"
                       required
                       onIonInput={handleSignalChange}
                     ></IonInput>
