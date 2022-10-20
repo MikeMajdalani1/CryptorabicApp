@@ -272,7 +272,7 @@ const Academy = () => {
 
     if (NewsInputs.title === '' || NewsInputs.content === '') {
       presentToast({
-        message: 'The market input is required!',
+        message: 'Please provide the required inputs',
         duration: 4000,
         icon: alertOutline,
         cssClass: 'redToast',
@@ -434,7 +434,7 @@ const Academy = () => {
                 return (
                   <>
                     <SwiperSlide className="swiperSignal" key={i}>
-                      {!data.createdAt ? (
+                      {data.createdAt ? (
                         <div className="signalDateAndTrash">
                           <IonLabel className="signalDate">
                             {formatDate(

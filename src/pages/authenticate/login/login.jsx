@@ -9,8 +9,9 @@ import {
   IonToolbar,
   IonIcon,
   IonLabel,
+  useIonToast,
 } from '@ionic/react';
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 
 import { useAuthState } from 'react-firebase-hooks/auth';
 import './login.css';
@@ -24,11 +25,12 @@ import {
   sendPasswordResetEmail,
 } from 'firebase/auth';
 import { collection, setDoc, doc } from 'firebase/firestore';
-import { closeOutline } from 'ionicons/icons';
+import { closeOutline, alertOutline } from 'ionicons/icons';
 const Login = () => {
   const auth = getAuth();
   const db = collection(database, 'users');
   const history = useHistory();
+  const [presentToast] = useIonToast();
   const [user, loading, error] = useAuthState(auth);
   const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
   const [loginErrors, setloginErrors] = useState({
@@ -56,6 +58,10 @@ const Login = () => {
     email: '',
     password: '',
   });
+
+  const regex =
+    /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+
   const handleRegisterChange = (e) => {
     setRegisterInputs((previousState) => ({
       ...previousState,
@@ -63,9 +69,12 @@ const Login = () => {
     }));
   };
   const handleLoginChange = (e) => {
-    // debugger;
-    // if (e.target.name == 'email') loginErrors.email = '';
-    // if (e.target.password == 'password') loginErrors.password = '';
+    if (e.target.value === '' && e.target.name === 'password') {
+      setLoginInputs({ password: '' });
+    }
+    if (e.target.value === '' && e.target.name === 'email') {
+      setLoginInputs({ email: '' });
+    }
     setLoginInputs((previousState) => ({
       ...previousState,
       [e.target.name]: e.target.value,
@@ -73,19 +82,39 @@ const Login = () => {
   };
 
   const handleLogin = async () => {
-    validateLogin(LoginInputs);
-    console.log(loginErrors.allchecked);
-
-    try {
-      await signInWithEmailAndPassword(
-        auth,
-        LoginInputs.email,
-        LoginInputs.password
-      );
-      history.replace('/tabs/academy');
-    } catch (error) {
-      console.log(error.message);
-      setAutherror('Wrong Email or Password');
+    if (LoginInputs.email === '' || LoginInputs.password == '') {
+      presentToast({
+        message: 'Please enter your email and password',
+        duration: 3000,
+        icon: alertOutline,
+        cssClass: 'redToast',
+      });
+    } else {
+      if (!regex.test(LoginInputs.email)) {
+        presentToast({
+          message: 'Please provide a valid email',
+          duration: 3000,
+          icon: alertOutline,
+          cssClass: 'redToast',
+        });
+      } else {
+        try {
+          await signInWithEmailAndPassword(
+            auth,
+            LoginInputs.email,
+            LoginInputs.password
+          );
+          history.replace('/tabs/academy');
+        } catch (error) {
+          console.log(error.message);
+          presentToast({
+            message: 'Wrong Email or Password',
+            duration: 3000,
+            icon: alertOutline,
+            cssClass: 'redToast',
+          });
+        }
+      }
     }
   };
 
@@ -172,7 +201,7 @@ const Login = () => {
                 name="email"
                 type="email"
                 placeholder="Email"
-                onIonInput={handleLoginChange}
+                onIonChange={handleLoginChange}
               ></IonInput>
             </IonItem>
             {loginErrors.email && (
@@ -185,7 +214,7 @@ const Login = () => {
                 name="password"
                 type="password"
                 placeholder="Password"
-                onIonInput={handleLoginChange}
+                onIonChange={handleLoginChange}
               ></IonInput>
             </IonItem>
             {loginErrors.password && (
@@ -219,7 +248,7 @@ const Login = () => {
           </IonToolbar>
         </IonHeader>
         <IonContent>
-          <div className="centerPage">
+          <div className="normalPage">
             <div className="RegisterContainer">
               <div className="FormLogoAndText">
                 <img
