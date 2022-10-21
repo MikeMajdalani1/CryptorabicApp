@@ -72,7 +72,7 @@ const Profile = () => {
       phone: phone,
       label: label,
     });
-  }, [name, phone, label]);
+  }, [name, phone, label, settingsTrigger]);
 
   const chooseImage = async () => {
     try {
@@ -573,7 +573,6 @@ const Profile = () => {
               <div
                 onClick={() => {
                   setsettingsTrigger(!settingsTrigger);
-                  fetchUserData();
                 }}
                 className="settingsIcon"
               >

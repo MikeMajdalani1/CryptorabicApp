@@ -305,7 +305,7 @@ const Academy = () => {
       const res = await deleteDoc(dataToDelete);
 
       presentToast({
-        message: 'Successfully Updated',
+        message: 'Successfully Deleted',
         duration: 1500,
         icon: checkmarkCircleOutline,
       });
@@ -343,7 +343,7 @@ const Academy = () => {
           <div className="seperatorDiv"></div>
 
           <Swiper slidesPerView={numberOfSlidesCoins} spaceBetween={20}>
-            {coins ? (
+            {coins.length !== 0 ? (
               Object.values(coins).map((coin, i) => {
                 return (
                   <SwiperSlide key={i}>
@@ -390,34 +390,29 @@ const Academy = () => {
                 const data = signal.data();
                 const dataID = signal.id;
                 return (
-                  <>
-                    <SwiperSlide className="swiperSignal" key={i}>
-                      {data.createdAt ? (
-                        <div className="signalDateAndTrash">
-                          <IonLabel className="signalDate">
-                            {formatDate(
-                              new Date(data.createdAt.seconds * 1000)
-                            )}
-                          </IonLabel>
-                          {admin ? (
-                            <IonIcon
-                              onClick={() => HandleDelete('signals', dataID)}
-                              icon={trash}
-                            />
-                          ) : null}
-                        </div>
-                      ) : null}
-                      <SignalCard
-                        key={i}
-                        market={data.market}
-                        tps={data.tps}
-                        stoploss={data.stoploss}
-                        entry={data.entry}
-                        risk={data.risk}
-                        position={data.position}
-                      />
-                    </SwiperSlide>
-                  </>
+                  <SwiperSlide className="swiperSignal" key={i}>
+                    {data.createdAt ? (
+                      <div className="signalDateAndTrash">
+                        <IonLabel className="signalDate">
+                          {formatDate(new Date(data.createdAt.seconds * 1000))}
+                        </IonLabel>
+                        {admin ? (
+                          <IonIcon
+                            onClick={() => HandleDelete('signals', dataID)}
+                            icon={trash}
+                          />
+                        ) : null}
+                      </div>
+                    ) : null}
+                    <SignalCard
+                      market={data.market}
+                      tps={data.tps}
+                      stoploss={data.stoploss}
+                      entry={data.entry}
+                      risk={data.risk}
+                      position={data.position}
+                    />
+                  </SwiperSlide>
                 );
               })
             ) : (
@@ -450,7 +445,7 @@ const Academy = () => {
               const data = newsChild.data();
               const dataID = newsChild.id;
               return (
-                <>
+                <div key={i}>
                   {admin && (
                     <div className="newsTrash">
                       <div></div>
@@ -467,7 +462,7 @@ const Academy = () => {
                     createdAt={data.createdAt}
                   />
                   <div className="seperatorDiv"></div>
-                </>
+                </div>
               );
             })
           ) : (

@@ -34,7 +34,7 @@ const Chat = () => {
 
   const [messages, setMessages] = useState([]);
   const [newMessage, setnewMessage] = useState('');
-
+  const [stopScroll, setSetopScroll] = useState(false);
   const bottomListRef = useRef();
 
   const [pinnedMessage, setPinnedMessage] = useState({
@@ -60,9 +60,14 @@ const Chat = () => {
     }
   }, [database]);
 
+  //This useEffect is responsible of scrolling down to the last message only once
   useEffect(() => {
-    bottomListRef.current.scrollIntoView({ behavior: 'smooth' });
-  }, []);
+    if (messages.length !== 0 && !stopScroll) {
+      bottomListRef.current.scrollIntoView({ behavior: 'smooth' });
+      setSetopScroll(true);
+    }
+  }, [messages]);
+  //---------------------------------------------------------------
 
   const fetchPinnedMessage = async () => {
     try {

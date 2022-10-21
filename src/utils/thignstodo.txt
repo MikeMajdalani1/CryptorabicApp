@@ -1,15 +1,10 @@
 - Spalsh Screen
 - Upload image of profile, front and back
-- fix loading of the messages in DB, restruct logic
 - integrate images into chat
-- optimize on iphone and android 
-- Implement Password reset
 - modify rules in firestore
-- global states for admin
-- restruct some code
-- fix key bugs
-- Verify Email
-- fix scroll to bottom
+
+
+
 AFTER MVP:
 - integrate like and comments on signals 
 - integrate pinned messages all of them
@@ -17,3 +12,5 @@ AFTER MVP:
 - Edit news info
 - promote user to admin
 - change phone number input to full tel
+- fix loading of the messages in DB, restruct logic
+- Verify Email

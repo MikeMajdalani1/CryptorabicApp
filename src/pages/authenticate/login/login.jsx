@@ -23,6 +23,7 @@ import {
 } from 'firebase/auth';
 import { collection, setDoc, doc } from 'firebase/firestore';
 import { closeOutline, alertOutline } from 'ionicons/icons';
+
 const Login = () => {
   const {
     presentToast,
@@ -34,6 +35,7 @@ const Login = () => {
   const history = useHistory();
 
   const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
+  const [isResetModalOpen, setResetModalOpen] = useState(false);
 
   const [RegisterInputs, setRegisterInputs] = useState({
     username: '',
@@ -46,10 +48,14 @@ const Login = () => {
     email: '',
     password: '',
   });
+  const [ResetInput, setResetInput] = useState('');
 
   const regex =
     /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
+  const handleInputChange = (e) => {
+    setResetInput(e.target.value);
+  };
   const handleRegisterChange = (e) => {
     if (e.target.value === '' && e.target.name === 'phone') {
       setRegisterInputs((previousState) => ({
@@ -99,6 +105,29 @@ const Login = () => {
       ...previousState,
       [e.target.name]: e.target.value,
     }));
+  };
+
+  const handleResetPassword = async () => {
+    if (ResetInput === '' || !regex.test(ResetInput)) {
+      presentToast({
+        message: 'Please provide a valid email',
+        duration: 3000,
+        icon: alertOutline,
+        cssClass: 'redToast',
+      });
+    } else {
+      try {
+        await sendPasswordResetEmail(auth, ResetInput);
+      } catch (error) {
+        console.log(error.message);
+        presentToast({
+          message: 'Error has occured',
+          duration: 3000,
+          icon: alertOutline,
+          cssClass: 'redToast',
+        });
+      }
+    }
   };
 
   const handleLogin = async () => {
@@ -262,7 +291,9 @@ const Login = () => {
           <IonButton size="large" onClick={handleLogin} expand="block">
             Sign In
           </IonButton>
-          <span className="forgot">Forgot password?</span>
+          <IonLabel onClick={() => setResetModalOpen(true)} className="forgot">
+            Forgot password?
+          </IonLabel>
         </form>
 
         <div className="signup">
@@ -351,6 +382,62 @@ const Login = () => {
               </IonItem>
               <IonLabel class="disclaimer">
                 By creating an account you agree and accept our privacy policy
+              </IonLabel>
+            </div>
+          </div>
+        </IonContent>
+      </IonModal>
+
+      <IonModal isOpen={isResetModalOpen} content="container">
+        <IonHeader>
+          <IonToolbar>
+            <IonButtons slot="start">
+              <IonButton onClick={() => setResetModalOpen(false)}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent>
+          <div className="normalPage">
+            <div className="RegisterContainer">
+              <div className="FormLogoAndText">
+                <img
+                  alt="logo"
+                  width={120}
+                  height={120}
+                  src="assets/logofalet.png"
+                />
+                <h3>
+                  Please provide the email you registered with so we can send
+                  you a rest password email
+                </h3>
+              </div>
+              <IonItem>
+                <div className="formContainer">
+                  <IonItem className="border">
+                    <IonInput
+                      name="email"
+                      type="email"
+                      value={ResetInput}
+                      placeholder="Email Address"
+                      required
+                      onIonChange={handleInputChange}
+                    ></IonInput>
+                  </IonItem>
+
+                  <IonButton
+                    size="large"
+                    onClick={handleResetPassword}
+                    expand="block"
+                  >
+                    Recover
+                  </IonButton>
+                </div>
+              </IonItem>
+              <IonLabel class="disclaimer">
+                Friendly tip: Always save your password somewhere safe so you
+                won't lose or forget them.
               </IonLabel>
             </div>
           </div>
