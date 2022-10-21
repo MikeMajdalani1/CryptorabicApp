@@ -9,7 +9,7 @@
 - restruct some code
 - fix key bugs
 - Verify Email
-
+- fix scroll to bottom
 AFTER MVP:
 - integrate like and comments on signals 
 - integrate pinned messages all of them

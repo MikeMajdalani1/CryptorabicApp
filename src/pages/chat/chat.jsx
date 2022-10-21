@@ -21,10 +21,7 @@ import {
   collection,
   orderBy,
   setDoc,
-  limit,
   doc,
-  getDocs,
-  where,
   onSnapshot,
   limitToLast,
 } from 'firebase/firestore';
@@ -64,9 +61,7 @@ const Chat = () => {
   }, [database]);
 
   useEffect(() => {
-    setTimeout(() => {
-      bottomListRef.current.scrollIntoView({ behavior: 'smooth' });
-    }, 1000);
+    bottomListRef.current.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
   const fetchPinnedMessage = async () => {

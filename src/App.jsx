@@ -1,11 +1,16 @@
-import { Redirect, Route } from 'react-router-dom';
-import { IonApp, setupIonicReact, useIonToast } from '@ionic/react';
+import { Route } from 'react-router-dom';
+import {
+  IonApp,
+  setupIonicReact,
+  useIonToast,
+  useIonAlert,
+} from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 
 import Login from './pages/authenticate/login/login';
 import Tabs from './tabs';
 import { MainContext } from './utils/Context';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -27,7 +32,7 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 
 /* Global imports */
-import { getAuth, sendSignInLinkToEmail } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { database } from './utils/firebaseConfig';
 import { query, collection, getDocs, where } from 'firebase/firestore';
@@ -44,6 +49,7 @@ const App = () => {
   const [label, setLabel] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
+  const [reAuth] = useIonAlert();
 
   const fetchUserData = async () => {
     try {
@@ -63,7 +69,7 @@ const App = () => {
     } catch (err) {
       console.error(err.message);
       presentToast({
-        message: 'An Error has occured, restart the app',
+        message: 'An Fetching Eroor has occured, restart the app',
         duration: 2000,
         icon: alertOutline,
         cssClass: 'redToast',
@@ -84,6 +90,7 @@ const App = () => {
         label,
         phone,
         email,
+        reAuth,
       }}
     >
       <IonApp>

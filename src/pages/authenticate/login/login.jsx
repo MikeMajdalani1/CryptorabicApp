@@ -9,17 +9,14 @@ import {
   IonToolbar,
   IonIcon,
   IonLabel,
-  useIonToast,
 } from '@ionic/react';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { checkFullNumber } from '../../../utils/functions';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { MainContext } from '../../../utils/Context';
 import './login.css';
 import { useHistory } from 'react-router-dom';
 
-import { database } from '../../../utils/firebaseConfig';
 import {
-  getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
@@ -27,21 +24,16 @@ import {
 import { collection, setDoc, doc } from 'firebase/firestore';
 import { closeOutline, alertOutline } from 'ionicons/icons';
 const Login = () => {
-  const auth = getAuth();
+  const {
+    presentToast,
+    database,
+
+    auth,
+  } = useContext(MainContext);
   const db = collection(database, 'users');
   const history = useHistory();
-  const [presentToast] = useIonToast();
-  const [user, loading, error] = useAuthState(auth);
-  const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
 
-  const [autherror, setAutherror] = useState('');
-  // useEffect(() => {
-  //   if (loading) {
-  //     setIsRegistered(true);
-  //     return;
-  //   }
-  //   if (user) history.replace('/tabs/academy');
-  // }, [user, loading]);
+  const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
 
   const [RegisterInputs, setRegisterInputs] = useState({
     username: '',
@@ -54,7 +46,7 @@ const Login = () => {
     email: '',
     password: '',
   });
-  const onlyNumbs = /^\d+$/;
+
   const regex =
     /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
@@ -249,27 +241,23 @@ const Login = () => {
           <h3>Be part of our beloved crypto community by signing in</h3>
         </div>
         <form className="formContainer">
-          {autherror && <IonLabel className="autherror">{autherror}</IonLabel>}
-          <div className="withError">
-            <IonItem className="border">
-              <IonInput
-                name="email"
-                type="email"
-                placeholder="Email"
-                onIonChange={handleLoginChange}
-              ></IonInput>
-            </IonItem>
-          </div>
-          <div className="withError">
-            <IonItem className="border">
-              <IonInput
-                name="password"
-                type="password"
-                placeholder="Password"
-                onIonChange={handleLoginChange}
-              ></IonInput>
-            </IonItem>
-          </div>
+          <IonItem className="border">
+            <IonInput
+              name="email"
+              type="email"
+              placeholder="Email"
+              onIonChange={handleLoginChange}
+            ></IonInput>
+          </IonItem>
+
+          <IonItem className="border">
+            <IonInput
+              name="password"
+              type="password"
+              placeholder="Password"
+              onIonChange={handleLoginChange}
+            ></IonInput>
+          </IonItem>
 
           <IonButton size="large" onClick={handleLogin} expand="block">
             Sign In

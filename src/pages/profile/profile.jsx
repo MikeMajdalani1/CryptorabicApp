@@ -3,13 +3,11 @@ import {
   IonAvatar,
   IonHeader,
   IonPage,
-  useIonAlert,
   IonLabel,
   IonItem,
   IonInput,
   IonButton,
   IonIcon,
-  useIonToast,
   IonSkeletonText,
 } from '@ionic/react';
 import {
@@ -21,15 +19,7 @@ import {
 } from 'firebase/auth';
 import Header from '../../components/header/header';
 import './profile.css';
-import {
-  query,
-  collection,
-  doc,
-  getDocs,
-  deleteDoc,
-  where,
-  updateDoc,
-} from 'firebase/firestore';
+import { doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { useHistory } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
 
@@ -46,15 +36,21 @@ import {
 import { checkFullNumber } from '../../utils/functions';
 import { MainContext } from '../../utils/Context';
 const Profile = () => {
-  const { database, user, auth } = useContext(MainContext);
+  const {
+    reAuth,
+    presentToast,
+    database,
+    user,
+    auth,
+    fetchUserData,
+    name,
+    label,
+    phone,
+    email,
+  } = useContext(MainContext);
 
   const history = useHistory();
-  const [reAuth] = useIonAlert();
-  const [presentToast] = useIonToast();
 
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [label, setLabel] = useState('');
   const [photo, setPhoto] = useState('/');
   const [settingsTrigger, setsettingsTrigger] = useState(false);
   const [ProfileInputs, setProfileInputs] = useState({
@@ -65,6 +61,18 @@ const Profile = () => {
   const [passwordInput, SetPasswordInput] = useState({
     password: '',
   });
+
+  useEffect(() => {
+    async function _fetchUserData() {
+      await fetchUserData();
+    }
+    _fetchUserData();
+    setProfileInputs({
+      email: email,
+      phone: phone,
+      label: label,
+    });
+  }, [name, phone, label]);
 
   const chooseImage = async () => {
     try {
@@ -105,39 +113,6 @@ const Profile = () => {
       [e.target.name]: e.target.value,
     }));
   };
-  const fetchData = async () => {
-    try {
-      const q = query(
-        collection(database, 'users'),
-        where('__name__', '==', user?.uid)
-      );
-      const doc = await getDocs(q);
-
-      const data = doc.docs[0].data();
-
-      setName(data.username);
-      setPhone(data.phone);
-
-      setLabel(data.label);
-      setProfileInputs({
-        email: auth.currentUser.email,
-        phone: data.phone,
-        label: data.label,
-      });
-    } catch (err) {
-      console.error(err);
-      presentToast({
-        message: 'An Error has occured, restart the app',
-        duration: 3000,
-        icon: alertOutline,
-        cssClass: 'redToast',
-      });
-      alert('An error occured while fetching user data');
-    }
-  };
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   //Listening to route change to reset the state of the settings page
   let location = useLocation();
@@ -276,7 +251,7 @@ const Profile = () => {
               phone: ProfileInputs.phone,
             });
 
-            fetchData();
+            fetchUserData();
             presentToast({
               message: 'Data Successfully Updated',
               duration: 1500,
@@ -328,7 +303,7 @@ const Profile = () => {
               label: ProfileInputs.label,
             });
 
-            fetchData();
+            fetchUserData();
             presentToast({
               message: 'Data Successfully Updated',
               duration: 1500,
@@ -598,7 +573,7 @@ const Profile = () => {
               <div
                 onClick={() => {
                   setsettingsTrigger(!settingsTrigger);
-                  fetchData();
+                  fetchUserData();
                 }}
                 className="settingsIcon"
               >
