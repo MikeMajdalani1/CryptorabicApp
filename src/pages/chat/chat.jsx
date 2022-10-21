@@ -12,9 +12,8 @@ import {
 import Message from '../../components/message/message';
 import Header from '../../components/header/header';
 import './chat.css';
-import { useState, useEffect, useRef } from 'react';
-
-import { app, database } from '../../utils/firebaseConfig';
+import { useState, useEffect, useRef, useContext } from 'react';
+import { MainContext } from '../../utils/Context';
 
 import {
   serverTimestamp,
@@ -29,31 +28,30 @@ import {
   onSnapshot,
   limitToLast,
 } from 'firebase/firestore';
-import { useIonToast } from '@ionic/react';
+
 import { sendSharp, arrowRedoCircleSharp, alertOutline } from 'ionicons/icons';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { getAuth } from 'firebase/auth';
 
 const Chat = () => {
+  const { user, database, presentToast, fetchUserData, name, label, admin } =
+    useContext(MainContext);
+
   const [messages, setMessages] = useState([]);
   const [newMessage, setnewMessage] = useState('');
-  const dbCollection = collection(database, 'messages');
-  const bottomListRef = useRef();
-  const auth = getAuth();
-  const [presentToast] = useIonToast();
 
-  const [user, loading] = useAuthState(auth);
-  const [name, setName] = useState('');
-  const [label, setLabel] = useState('');
-  const [admin, setAdmin] = useState('');
+  const bottomListRef = useRef();
+
   const [pinnedMessage, setPinnedMessage] = useState({
     createdAt: '',
     text: '',
     name: '',
   });
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
   useEffect(() => {
     if (database) {
-      fetchUserData();
       fetchPinnedMessage();
       const q = query(collection(database, 'messages'), orderBy('createdAt'));
 
@@ -70,30 +68,6 @@ const Chat = () => {
       bottomListRef.current.scrollIntoView({ behavior: 'smooth' });
     }, 1000);
   }, []);
-
-  const fetchUserData = async () => {
-    try {
-      const q = query(
-        collection(database, 'users'),
-        where('__name__', '==', user?.uid)
-      );
-      const doc = await getDocs(q);
-
-      const data = doc.docs[0].data();
-
-      setName(data.username);
-      setLabel(data.label);
-      setAdmin(data.isAdmin);
-    } catch (err) {
-      console.error(err.message);
-      presentToast({
-        message: 'An Error has occured, restart the app',
-        duration: 2000,
-        icon: alertOutline,
-        cssClass: 'redToast',
-      });
-    }
-  };
 
   const fetchPinnedMessage = async () => {
     try {
@@ -137,7 +111,7 @@ const Chat = () => {
     }
 
     try {
-      await setDoc(doc(dbCollection), {
+      await setDoc(doc(collection(database, 'messages')), {
         text: newMessage.trim(),
         createdAt: serverTimestamp(),
         uid: user.uid,

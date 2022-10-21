@@ -1,4 +1,11 @@
-import { addDoc, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import {
+  addDoc,
+  getDocs,
+  doc,
+  updateDoc,
+  deleteDoc,
+  onSnapshot,
+} from 'firebase/firestore';
 
 export const addData = async (db, inputs) => {
   try {

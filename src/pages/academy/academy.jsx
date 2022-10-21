@@ -20,16 +20,17 @@ import {
   IonSkeletonText,
 } from '@ionic/react';
 import CryptoCard from '../../components/cryptoCard/cryptoCard';
-import { formatRelative } from 'date-fns';
+
 import Header from '../../components/header/header';
 import './academy.css';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper.min.css';
 import '@ionic/react/css/ionic-swiper.css';
 import { useWindowWidth } from '@react-hook/window-size';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import NewsCard from '../../components/newsCard/newsCard';
 import SignalCard from '../../components/signalCard/signalCard';
+import { MainContext } from '../../utils/Context';
 import {
   logoTiktok,
   logoInstagram,
@@ -41,7 +42,7 @@ import {
   newspaper,
   checkmarkCircleOutline,
 } from 'ionicons/icons';
-import { useIonToast } from '@ionic/react';
+
 import {
   serverTimestamp,
   query,
@@ -56,26 +57,24 @@ import {
   limitToLast,
   deleteDoc,
 } from 'firebase/firestore';
-import { database } from '../../utils/firebaseConfig';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { getAuth } from 'firebase/auth';
+import { fetchCoins, formatDate } from '../../utils/functions';
 
 const Academy = () => {
+  const { database, presentToast, fetchUserData, admin } =
+    useContext(MainContext);
+
   const onlyWidth = useWindowWidth();
+
+  const [coins, setCoins] = useState({});
+  const [news, setNews] = useState([]);
+  const [signals, setSignals] = useState([]);
+
   const [numberOfSlidesCoins, setnumberOfSlidesCoins] = useState(2);
   const [numberOfSlidesSignals, setnumberOfSlidesSignals] = useState(2);
-  const URL =
-    'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20';
-  const [admin, setAdmin] = useState('');
-  const [coins, setCoins] = useState({});
-  const [presentToast] = useIonToast();
-  const auth = getAuth();
-  const [user] = useAuthState(auth);
+
   const [isSignalModalOpen, setSignalModalOpen] = useState(false);
   const [isNewslModalOpen, setNewslModalOpen] = useState(false);
-  const [signals, setSignals] = useState([]);
-  const [news, setNews] = useState([]);
-  const [showSekelton, setShowSkeleton] = useState(true);
+
   const [SignalInputs, setSignalInputs] = useState({
     market: '',
     stoploss: '',
@@ -104,11 +103,11 @@ const Academy = () => {
   }, [database]);
 
   useEffect(() => {
-    setTimeout(() => {
-      setShowSkeleton(false);
-    }, 1500);
     fetchUserData();
-    fetcher(URL);
+    async function _fetchCoins() {
+      setCoins(await fetchCoins());
+    }
+    _fetchCoins();
   }, []);
 
   useEffect(() => {
@@ -129,6 +128,7 @@ const Academy = () => {
       return;
     }
   }, [onlyWidth]);
+
   useEffect(() => {
     if (onlyWidth < 635) {
       setnumberOfSlidesSignals(1);
@@ -140,18 +140,6 @@ const Academy = () => {
       return;
     }
   }, [onlyWidth]);
-
-  const formatDate = (date) => {
-    let formattedDate = '';
-    if (date) {
-      // Convert the date in words relative to the current date
-      formattedDate = formatRelative(date, new Date());
-      // Uppercase the first letter
-      formattedDate =
-        formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
-    }
-    return formattedDate;
-  };
 
   const handleNewsChange = (e) => {
     setNewsInputs((previousState) => ({
@@ -187,36 +175,6 @@ const Academy = () => {
         return tp;
       }),
     }));
-  };
-  const fetcher = async (url) => {
-    const res = await fetch(url);
-    const json = await res.json();
-
-    setCoins(json);
-
-    return json;
-  };
-
-  const fetchUserData = async () => {
-    try {
-      const q = query(
-        collection(database, 'users'),
-        where('__name__', '==', user?.uid)
-      );
-      const doc = await getDocs(q);
-
-      const data = doc.docs[0].data();
-
-      setAdmin(data.isAdmin);
-    } catch (err) {
-      console.error(err.message);
-      presentToast({
-        message: 'An Error has occured, restart the app',
-        duration: 2000,
-        icon: alertOutline,
-        cssClass: 'redToast',
-      });
-    }
   };
 
   const fetchNews = async () => {

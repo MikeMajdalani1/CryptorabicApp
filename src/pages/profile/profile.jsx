@@ -13,7 +13,6 @@ import {
   IonSkeletonText,
 } from '@ionic/react';
 import {
-  getAuth,
   signOut,
   updateEmail,
   updatePassword,
@@ -32,9 +31,8 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import { useHistory } from 'react-router-dom';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { useState, useEffect } from 'react';
-import { database } from '../../utils/firebaseConfig';
+import { useState, useEffect, useContext } from 'react';
+
 import { useLocation } from 'react-router-dom';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import {
@@ -46,13 +44,14 @@ import {
   caretUpCircle,
 } from 'ionicons/icons';
 import { checkFullNumber } from '../../utils/functions';
+import { MainContext } from '../../utils/Context';
 const Profile = () => {
-  const auth = getAuth();
+  const { database, user, auth } = useContext(MainContext);
+
   const history = useHistory();
   const [reAuth] = useIonAlert();
   const [presentToast] = useIonToast();
 
-  const [user] = useAuthState(auth);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [label, setLabel] = useState('');
