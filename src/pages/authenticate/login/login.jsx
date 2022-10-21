@@ -12,7 +12,7 @@ import {
   useIonToast,
 } from '@ionic/react';
 import { useState } from 'react';
-
+import { checkFullNumber } from '../../../utils/functions';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import './login.css';
 import { useHistory } from 'react-router-dom';
@@ -33,11 +33,7 @@ const Login = () => {
   const [presentToast] = useIonToast();
   const [user, loading, error] = useAuthState(auth);
   const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
-  const [loginErrors, setloginErrors] = useState({
-    email: '',
-    password: '',
-    allchecked: 'null',
-  });
+
   const [autherror, setAutherror] = useState('');
   // useEffect(() => {
   //   if (loading) {
@@ -58,11 +54,37 @@ const Login = () => {
     email: '',
     password: '',
   });
-
+  const onlyNumbs = /^\d+$/;
   const regex =
     /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
   const handleRegisterChange = (e) => {
+    if (e.target.value === '' && e.target.name === 'phone') {
+      setRegisterInputs((previousState) => ({
+        ...previousState,
+        phone: '',
+      }));
+    }
+    if (e.target.value === '' && e.target.name === 'username') {
+      setRegisterInputs((previousState) => ({
+        ...previousState,
+        username: '',
+      }));
+    }
+    if (e.target.value === '' && e.target.name === 'email') {
+      setRegisterInputs((previousState) => ({
+        ...previousState,
+        email: '',
+      }));
+    }
+
+    if (e.target.value === '' && e.target.name === 'password') {
+      setRegisterInputs((previousState) => ({
+        ...previousState,
+        password: '',
+      }));
+    }
+
     setRegisterInputs((previousState) => ({
       ...previousState,
       [e.target.name]: e.target.value,
@@ -70,10 +92,16 @@ const Login = () => {
   };
   const handleLoginChange = (e) => {
     if (e.target.value === '' && e.target.name === 'password') {
-      setLoginInputs({ password: '' });
+      setLoginInputs((previousState) => ({
+        ...previousState,
+        password: '',
+      }));
     }
     if (e.target.value === '' && e.target.name === 'email') {
-      setLoginInputs({ email: '' });
+      setLoginInputs((previousState) => ({
+        ...previousState,
+        email: '',
+      }));
     }
     setLoginInputs((previousState) => ({
       ...previousState,
@@ -119,33 +147,87 @@ const Login = () => {
   };
 
   const handleRegister = async () => {
-    setRegisterModalOpen(false);
-    let res;
-    try {
-      res = await createUserWithEmailAndPassword(
-        auth,
-        RegisterInputs.email,
-        RegisterInputs.password
-      );
-
-      console.log('User Created');
-
-      history.replace('/tabs/academy');
-    } catch (error) {
-      alert(error.message);
-    }
-    const user = res.user;
-    try {
-      await setDoc(doc(db, user.uid), {
-        username: RegisterInputs.username,
-        phone: RegisterInputs.phone,
-        label: 'New User',
-        isAdmin: false,
+    if (
+      RegisterInputs.username === '' ||
+      RegisterInputs.email === '' ||
+      RegisterInputs.phone === '' ||
+      RegisterInputs.password === ''
+    ) {
+      presentToast({
+        message: 'Oops, you left some input fields empty',
+        duration: 3000,
+        icon: alertOutline,
+        cssClass: 'redToast',
       });
-      console.log('Document Created');
-    } catch (error) {
-      history.replace('/');
-      alert(error.message);
+    } else {
+      if (RegisterInputs.username.length > 25) {
+        presentToast({
+          message: 'Username can not be more than 25 characters',
+          duration: 3000,
+          icon: alertOutline,
+          cssClass: 'redToast',
+        });
+      } else if (RegisterInputs.password.length < 7) {
+        presentToast({
+          message: 'Password should be more than 6 characters',
+          duration: 3000,
+          icon: alertOutline,
+          cssClass: 'redToast',
+        });
+      } else if (!regex.test(RegisterInputs.email)) {
+        presentToast({
+          message: 'Incorrect Email Format',
+          duration: 3000,
+          icon: alertOutline,
+          cssClass: 'redToast',
+        });
+      } else if (checkFullNumber(RegisterInputs.phone)) {
+        presentToast({
+          message: 'Incorrect Phone Number Format',
+          duration: 3000,
+          icon: alertOutline,
+          cssClass: 'redToast',
+        });
+      } else {
+        setRegisterModalOpen(false);
+        let res;
+        try {
+          res = await createUserWithEmailAndPassword(
+            auth,
+            RegisterInputs.email,
+            RegisterInputs.password
+          );
+
+          console.log('User Created');
+
+          history.replace('/tabs/academy');
+        } catch (error) {
+          presentToast({
+            message: 'Email Already Registered',
+            duration: 3000,
+            icon: alertOutline,
+            cssClass: 'redToast',
+          });
+        }
+        const user = res.user;
+        try {
+          await setDoc(doc(db, user.uid), {
+            username: RegisterInputs.username,
+            phone: RegisterInputs.phone,
+            label: 'New User',
+            isAdmin: false,
+          });
+          console.log('Document Created');
+        } catch (error) {
+          history.replace('/');
+          presentToast({
+            message: 'An error has occured',
+            duration: 3000,
+            icon: alertOutline,
+            cssClass: 'redToast',
+          });
+        }
+      }
     }
   };
 
@@ -156,33 +238,6 @@ const Login = () => {
     } catch (err) {
       console.error(err);
       alert(err.message);
-    }
-  };
-  const validateLogin = (values) => {
-    const regex =
-      /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-
-    if (!values.email && !values.password) {
-      setloginErrors({
-        email: 'Please enter your email address',
-        password: 'Please enter your password',
-      });
-    } else if (!values.email) {
-      setloginErrors({
-        email: 'Please enter your email address',
-        password: '',
-      });
-    } else if (!values.password) {
-      setloginErrors({
-        email: '',
-        password: 'Please enter your password',
-      });
-    } else {
-      setloginErrors({
-        email: '',
-        password: '',
-        allchecked: 'checked',
-      });
     }
   };
 
@@ -204,9 +259,6 @@ const Login = () => {
                 onIonChange={handleLoginChange}
               ></IonInput>
             </IonItem>
-            {loginErrors.email && (
-              <IonLabel className="errorMessage">{loginErrors.email}</IonLabel>
-            )}
           </div>
           <div className="withError">
             <IonItem className="border">
@@ -217,11 +269,6 @@ const Login = () => {
                 onIonChange={handleLoginChange}
               ></IonInput>
             </IonItem>
-            {loginErrors.password && (
-              <IonLabel className="errorMessage">
-                {loginErrors.password}
-              </IonLabel>
-            )}
           </div>
 
           <IonButton size="large" onClick={handleLogin} expand="block">
@@ -271,7 +318,7 @@ const Login = () => {
                       value={RegisterInputs.username}
                       placeholder="Username"
                       required
-                      onIonInput={handleRegisterChange}
+                      onIonChange={handleRegisterChange}
                     ></IonInput>
                   </IonItem>
                   <IonItem className="border">
@@ -281,17 +328,17 @@ const Login = () => {
                       type="email"
                       placeholder="Email"
                       required
-                      onIonInput={handleRegisterChange}
+                      onIonChange={handleRegisterChange}
                     ></IonInput>
                   </IonItem>
                   <IonItem className="border">
                     <IonInput
                       name="phone"
-                      type="number"
+                      type="tel"
                       value={RegisterInputs.phone}
                       placeholder="Phone Number"
                       required
-                      onIonInput={handleRegisterChange}
+                      onIonChange={handleRegisterChange}
                     ></IonInput>
                   </IonItem>
 
@@ -302,7 +349,7 @@ const Login = () => {
                       type="password"
                       placeholder="Password"
                       required
-                      onIonInput={handleRegisterChange}
+                      onIonChange={handleRegisterChange}
                     ></IonInput>
                   </IonItem>
                   <IonButton

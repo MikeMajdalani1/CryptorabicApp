@@ -120,3 +120,16 @@ h4 {
     flex-direction: column;
   }
 }
+@media (max-height: 725px) {
+  .centerPage {
+    padding: 30px 40px;
+    top: 0;
+    transform: none;
+    position: relative;
+    text-align: center;
+    margin: 0 auto;
+    width: 100%;
+    max-height: fit-content;
+    overflow-y: scroll;
+  }
+}

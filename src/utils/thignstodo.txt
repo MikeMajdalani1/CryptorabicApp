@@ -1,5 +1,4 @@
 - Spalsh Screen
-- Login/Regitser validations
 - When switching from tab to tab to reset data of Login
 - Upload image of profile, front and back
 - fix loading of the messages in DB, restruct logic
@@ -7,16 +6,16 @@
 - integrate images into chat
 - optimize on iphone and android 
 - Implement Password reset
-- test of user send message then deleted his account what happens to the chat?
 - modify rules in firestore
 - global states for admin
 - restruct some code
 - fix key bugs
+- Verify Email
 
 AFTER MVP:
 - integrate like and comments on signals 
 - integrate pinned messages all of them
 - Crypto news free API?
 - Edit news info
-- Verify Email
 - promote user to admin
+- change phone number input to full tel

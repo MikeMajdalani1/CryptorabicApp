@@ -35,7 +35,7 @@ import { useHistory } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useState, useEffect } from 'react';
 import { database } from '../../utils/firebaseConfig';
-
+import { useLocation } from 'react-router-dom';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import {
   cloudUploadOutline,
@@ -45,37 +45,32 @@ import {
   settings,
   caretUpCircle,
 } from 'ionicons/icons';
-
+import { checkFullNumber } from '../../utils/functions';
 const Profile = () => {
   const auth = getAuth();
-  const [user, loading, error] = useAuthState(auth);
+  const history = useHistory();
+  const [reAuth] = useIonAlert();
+  const [presentToast] = useIonToast();
+
+  const [user] = useAuthState(auth);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-
   const [label, setLabel] = useState('');
   const [photo, setPhoto] = useState('/');
   const [settingsTrigger, setsettingsTrigger] = useState(false);
-
   const [ProfileInputs, setProfileInputs] = useState({
     email: '',
     phone: '',
     label: '',
   });
-
   const [passwordInput, SetPasswordInput] = useState({
     password: '',
   });
 
-  const [reAuth] = useIonAlert();
-  const [presentToast] = useIonToast();
-
-  const db = collection(database, 'users');
-  const history = useHistory();
-
   const chooseImage = async () => {
     try {
       const data = await takePicture();
-      console.log(data);
+
       setPhoto(data.webPath);
     } catch (error) {
       alert(error.message);
@@ -130,7 +125,6 @@ const Profile = () => {
         phone: data.phone,
         label: data.label,
       });
-      console.log(ProfileInputs);
     } catch (err) {
       console.error(err);
       presentToast({
@@ -145,6 +139,13 @@ const Profile = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  //Listening to route change to reset the state of the settings page
+  let location = useLocation();
+  useEffect(() => {
+    settingsTrigger && setsettingsTrigger(false);
+  }, [location]);
+  //-----------------------------------------------------------------
 
   const updateData = async (field) => {
     let dataToUpdate = doc(database, 'users', user?.uid);
@@ -201,7 +202,7 @@ const Profile = () => {
                 role: 'confirm',
                 handler: async (alertData) => {
                   const oldPassword = alertData.oldPassword;
-                  console.log(oldPassword);
+
                   if (oldPassword === '') {
                     presentToast({
                       message: 'Please enter your current password',
@@ -220,7 +221,7 @@ const Profile = () => {
                         auth.currentUser,
                         credential
                       );
-                      console.log(res);
+
                       _changeEmail(ProfileInputs.email);
                     } catch (error) {
                       console.log('ReAuth error' + error.message);
@@ -262,13 +263,20 @@ const Profile = () => {
             cssClass: 'redToast',
           });
           break;
+        } else if (checkFullNumber(ProfileInputs.phone)) {
+          presentToast({
+            message: 'Please provide a valid phone number',
+            duration: 1500,
+            icon: alertOutline,
+            cssClass: 'redToast',
+          });
+          break;
         } else {
           try {
             const res = await updateDoc(dataToUpdate, {
               phone: ProfileInputs.phone,
             });
 
-            console.log(res);
             fetchData();
             presentToast({
               message: 'Data Successfully Updated',
@@ -294,7 +302,7 @@ const Profile = () => {
         if (label === ProfileInputs.label) {
           presentToast({
             message: 'Same label got provided',
-            duration: 1500,
+            duration: 2500,
             icon: alertOutline,
             cssClass: 'redToast',
           });
@@ -302,7 +310,15 @@ const Profile = () => {
         } else if (ProfileInputs.label === '') {
           presentToast({
             message: 'Please provide a label',
-            duration: 1500,
+            duration: 2500,
+            icon: alertOutline,
+            cssClass: 'redToast',
+          });
+          break;
+        } else if (ProfileInputs.label.length > 20) {
+          presentToast({
+            message: 'Label should be shorter',
+            duration: 2500,
             icon: alertOutline,
             cssClass: 'redToast',
           });
@@ -313,7 +329,6 @@ const Profile = () => {
               label: ProfileInputs.label,
             });
 
-            console.log(res);
             fetchData();
             presentToast({
               message: 'Data Successfully Updated',
@@ -333,9 +348,6 @@ const Profile = () => {
           }
         }
       //-------------------------------------------------
-
-      case 'email':
-        return console.log('lol');
     }
   };
 
@@ -343,6 +355,13 @@ const Profile = () => {
     if (newPassword === '') {
       presentToast({
         message: 'Please enter a new password if you wish to change it',
+        duration: 2500,
+        icon: alertOutline,
+        cssClass: 'redToast',
+      });
+    } else if (newPassword.length < 7) {
+      presentToast({
+        message: 'Password should be more than 6 characters',
         duration: 2500,
         icon: alertOutline,
         cssClass: 'redToast',
@@ -369,7 +388,7 @@ const Profile = () => {
             role: 'confirm',
             handler: (alertData) => {
               const oldPassword = alertData.oldPassword;
-              console.log(oldPassword);
+
               if (oldPassword === '') {
                 presentToast({
                   message: 'Please enter your current password',
@@ -402,10 +421,9 @@ const Profile = () => {
         auth.currentUser,
         credential
       );
-      console.log(res);
+
       try {
         const res = await updatePassword(auth.currentUser, newPassword);
-        console.log(res);
 
         presentToast({
           message: 'Password Changed Successfully',
@@ -434,7 +452,6 @@ const Profile = () => {
   };
 
   const _changeEmail = async (newEmail) => {
-    console.log(newEmail);
     try {
       const res = await updateEmail(user, newEmail);
       console.log(res);
@@ -470,7 +487,7 @@ const Profile = () => {
           role: 'confirm',
           handler: (alertData) => {
             const oldPassword = alertData.oldPassword;
-            console.log(oldPassword);
+
             if (oldPassword === '') {
               presentToast({
                 message: 'Please enter your current password',
@@ -504,10 +521,10 @@ const Profile = () => {
         auth.currentUser,
         credential
       );
-      console.log(res);
+
       try {
         const res = await deleteDoc(dataToDelete);
-        console.log(res);
+
         try {
           await user.delete();
           history.replace('/');
@@ -580,7 +597,10 @@ const Profile = () => {
           <div className="detailscontainer">
             <div className="detailslist">
               <div
-                onClick={() => setsettingsTrigger(!settingsTrigger)}
+                onClick={() => {
+                  setsettingsTrigger(!settingsTrigger);
+                  fetchData();
+                }}
                 className="settingsIcon"
               >
                 <IonIcon icon={!settingsTrigger ? settingsOutline : settings} />
