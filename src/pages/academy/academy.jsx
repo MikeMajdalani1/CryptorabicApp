@@ -343,7 +343,7 @@ const Academy = () => {
           <div className="seperatorDiv"></div>
 
           <Swiper slidesPerView={numberOfSlidesCoins} spaceBetween={20}>
-            {coins.length !== 0 ? (
+            {Object.keys(coins).length !== 0 ? (
               Object.values(coins).map((coin, i) => {
                 return (
                   <SwiperSlide key={i}>
