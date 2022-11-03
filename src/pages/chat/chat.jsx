@@ -24,6 +24,9 @@ import {
   doc,
   onSnapshot,
   limitToLast,
+  arrayUnion,
+  Timestamp,
+  updateDoc,
 } from 'firebase/firestore';
 
 import { sendSharp, arrowRedoCircleSharp, alertOutline } from 'ionicons/icons';
@@ -50,12 +53,16 @@ const Chat = () => {
   useEffect(() => {
     if (database) {
       fetchPinnedMessage();
-      const q = query(collection(database, 'messages'), orderBy('createdAt'));
+      // const q = query(collection(database, 'messages'), orderBy('createdAt'));
+
+      // const unsub = onSnapshot(q, (res) => {
+      //   setMessages(res.docs.map((snap) => snap.data()));
+      // });
+      const q = query(collection(database, 'chat'));
 
       const unsub = onSnapshot(q, (res) => {
-        setMessages(res.docs.map((snap) => snap.data()));
+        setMessages(res.docs.map((snap) => snap.data().messages));
       });
-
       return unsub;
     }
   }, [database]);
@@ -103,23 +110,28 @@ const Chat = () => {
 
     setnewMessage(e.target.value);
   };
-  const sendMessage = async (e) => {
+
+  const sendMessage2 = async (e) => {
     e.preventDefault();
 
     if (newMessage === '') {
       return;
     }
+    let dataToUpdate = doc(database, 'chat', 'data1');
 
     try {
-      await setDoc(doc(collection(database, 'messages')), {
-        text: newMessage.trim(),
-        createdAt: serverTimestamp(),
-        uid: user.uid,
-        name: name,
-        label: label,
-        isAdmin: admin,
-      });
       setnewMessage('');
+      await updateDoc(dataToUpdate, {
+        messages: arrayUnion({
+          text: newMessage.trim(),
+          createdAt: Timestamp.now(),
+          uid: user.uid,
+          name: name,
+          label: label,
+          isAdmin: admin,
+        }),
+      });
+
       console.log('Document Created');
 
       bottomListRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -162,11 +174,12 @@ const Chat = () => {
       <IonContent>
         <div className="chatroom">
           {messages[0] ? (
-            messages.map((message, i) => {
+            messages[0].map((message, i) => {
               return (
                 <div key={i}>
                   <Message
                     key={i}
+                    uid={message.uid}
                     displayMessage={message.text}
                     time={message.createdAt}
                     username={message.name}
@@ -198,7 +211,7 @@ const Chat = () => {
           ></IonInput>
         </IonItem>
 
-        <div onClick={sendMessage}>
+        <div onClick={sendMessage2}>
           <IonIcon
             className={
               newMessage === '' ? 'iconDisbaled sharpIcon' : 'sharpIcon'

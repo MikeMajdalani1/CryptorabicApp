@@ -1,13 +1,21 @@
 import './message.css';
 import { formatRelative } from 'date-fns';
 import { IonLabel, IonAvatar, IonIcon } from '@ionic/react';
-import { star, pin } from 'ionicons/icons';
+import { star, pin, trash } from 'ionicons/icons';
 import { database } from '../../utils/firebaseConfig';
 import { useIonToast } from '@ionic/react';
-import { alertOutline } from 'ionicons/icons';
-import { collection, setDoc, doc, serverTimestamp } from 'firebase/firestore';
+import { alertOutline, checkmarkCircleOutline } from 'ionicons/icons';
+import {
+  collection,
+  setDoc,
+  doc,
+  updateDoc,
+  arrayRemove,
+  serverTimestamp,
+} from 'firebase/firestore';
 
 function Message({
+  uid,
   profilePic,
   displayMessage,
   username,
@@ -18,6 +26,7 @@ function Message({
   displayStar,
 }) {
   const [presentToast] = useIonToast();
+
   const formatDate = (date) => {
     let formattedDate = '';
     if (date) {
@@ -54,12 +63,50 @@ function Message({
     }
   };
 
+  const HandleDelete = async () => {
+    let dataToDelete = doc(database, 'chat', 'data1');
+    let constructedObj = {
+      text: displayMessage,
+      createdAt: time,
+      uid: uid,
+      name: username,
+      label: label,
+      isAdmin: displayStar,
+    };
+    console.log(constructedObj);
+    try {
+      await updateDoc(dataToDelete, {
+        messages: arrayRemove(constructedObj),
+      });
+
+      presentToast({
+        message: 'Successfully Deleted',
+        duration: 1500,
+        icon: checkmarkCircleOutline,
+      });
+    } catch (error) {
+      console.log('Deleting error' + error.message);
+      presentToast({
+        message: 'Error Updating Data',
+        duration: 1500,
+        icon: alertOutline,
+        cssClass: 'redToast',
+      });
+    }
+  };
+
   return (
     <div className={`mainContainer ${isCurrentUser && 'reverseRow'}`}>
       <div className="pinandavatar">
         {isAdmin ? (
-          <div onClick={pinIt}>
-            <IonIcon className="pinIcon" icon={pin}></IonIcon>
+          <div className="messageTools">
+            <div onClick={pinIt}>
+              <IonIcon className="pinIcon" icon={pin}></IonIcon>
+            </div>
+            <div onClick={HandleDelete}>
+              {' '}
+              <IonIcon className="pinIcon" icon={trash}></IonIcon>{' '}
+            </div>
           </div>
         ) : (
           <div></div>

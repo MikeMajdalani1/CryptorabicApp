@@ -63,6 +63,12 @@
 .usernameStyles {
   color: #79bcfa;
 }
+.messageTools {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
 /* //background-color: #79bcfa; */
 .flexRow {
   display: flex;
