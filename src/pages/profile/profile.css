@@ -49,10 +49,11 @@ ion-label {
   gap: -20px;
   align-items: center;
 }
+
 .UploadIcon {
   align-self: flex-end;
   font-size: 30px;
-  transform: translateY(-30px) translateX(-20px);
+  transform: translateY(-19px) translateX(-7px);
   opacity: 0.9;
 }
 .UploadIcon:hover {

@@ -12,5 +12,4 @@ AFTER MVP:
 - Edit news info
 - promote user to admin
 - change phone number input to full tel
-- fix loading of the messages in DB, restruct logic
 - Verify Email

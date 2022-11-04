@@ -22,6 +22,13 @@ import './profile.css';
 import { doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { useHistory } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
+import {
+  ref,
+  uploadBytesResumable,
+  uploadString,
+  uploadBytes,
+  getDownloadURL,
+} from 'firebase/storage';
 
 import { useLocation } from 'react-router-dom';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
@@ -35,6 +42,8 @@ import {
 } from 'ionicons/icons';
 import { checkFullNumber } from '../../utils/functions';
 import { MainContext } from '../../utils/Context';
+import { storage } from '../../utils/firebaseConfig';
+
 const Profile = () => {
   const {
     reAuth,
@@ -46,12 +55,13 @@ const Profile = () => {
     name,
     label,
     phone,
+    imageURL,
     email,
   } = useContext(MainContext);
 
   const history = useHistory();
 
-  const [photo, setPhoto] = useState('/');
+  const [photoLoading, setPhotoloading] = useState(false);
   const [settingsTrigger, setsettingsTrigger] = useState(false);
   const [ProfileInputs, setProfileInputs] = useState({
     email: '',
@@ -75,25 +85,61 @@ const Profile = () => {
   }, [name, phone, label, settingsTrigger]);
 
   const chooseImage = async () => {
-    try {
-      const data = await takePicture();
+    let dataToUpdate = doc(database, 'users', user?.uid);
 
-      setPhoto(data.webPath);
+    try {
+      const image = await Camera.getPhoto({
+        quality: 90,
+        allowEditing: false,
+        resultType: CameraResultType.Base64,
+        source: CameraSource.Prompt,
+        promptLabelPhoto: 'Gallery',
+        promptLabelPicture: 'Camera',
+        promptLabelHeader: 'Cancel',
+      });
+      setPhotoloading(true);
+      const rawData = atob(image.base64String);
+      const bytes = new Array(rawData.length);
+      for (var x = 0; x < rawData.length; x++) {
+        bytes[x] = rawData.charCodeAt(x);
+      }
+      const arr = new Uint8Array(bytes);
+      const blob = new Blob([arr], { type: 'image/png' });
+
+      const storageRef = ref(storage, `/files/${name}.png`);
+
+      await uploadBytesResumable(storageRef, blob);
+
+      try {
+        const starsRefDownload = ref(storage, `/files/${name}.png`);
+        const imagePath = await getDownloadURL(starsRefDownload);
+
+        await updateDoc(dataToUpdate, {
+          imageURL: imagePath,
+        });
+
+        fetchUserData();
+        setPhotoloading(false);
+        presentToast({
+          message: 'Image Successfully Updated',
+          duration: 1500,
+          icon: checkmarkCircleOutline,
+        });
+      } catch (error) {
+        console.log('UpdatePhone error' + error.message);
+        presentToast({
+          message: 'Error Updating Data',
+          duration: 1500,
+          icon: alertOutline,
+          cssClass: 'redToast',
+        });
+        setPhotoloading(false);
+      }
+
+      // setPhoto(imageUrl);
     } catch (error) {
       alert(error.message);
     }
-  };
-
-  const takePicture = () => {
-    const image = Camera.getPhoto({
-      quality: 90,
-      resultType: CameraResultType.Uri,
-      source: CameraSource.Prompt,
-      promptLabelPhoto: 'Gallery',
-      promptLabelPicture: 'Camera',
-      promptLabelHeader: 'Cancel',
-    });
-    return image;
   };
 
   const singOut = async () => {
@@ -541,21 +587,28 @@ const Profile = () => {
         <div className="profilecontainer">
           <div className="center">
             <div className="ImageContainer">
-              <IonAvatar>
-                <img
-                  alt="Silhouette of a person's head"
-                  src="assets/joenassar.png"
-                />
-              </IonAvatar>
-
-              <div
-                className="UploadIcon"
-                onClick={() => {
-                  console.log('hi');
-                }}
-              >
-                <IonIcon icon={cloudUploadOutline} />
-              </div>
+              {!imageURL || photoLoading ? (
+                <div>
+                  <IonSkeletonText
+                    animated={true}
+                    style={{
+                      height: '160px',
+                      width: '160px',
+                      borderRadius: '50%',
+                    }}
+                  ></IonSkeletonText>
+                  <div style={{ height: '20px' }} />
+                </div>
+              ) : (
+                <>
+                  <IonAvatar>
+                    <img src={imageURL} />
+                  </IonAvatar>
+                  <div className="UploadIcon" onClick={chooseImage}>
+                    <IonIcon icon={cloudUploadOutline} />
+                  </div>
+                </>
+              )}
 
               {name ? (
                 <IonLabel className="username">{name}</IonLabel>

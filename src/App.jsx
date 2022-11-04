@@ -49,6 +49,7 @@ const App = () => {
   const [label, setLabel] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
+  const [imageURL, setImageURL] = useState('');
   const [reAuth] = useIonAlert();
 
   const fetchUserData = async () => {
@@ -66,6 +67,7 @@ const App = () => {
       setPhone(data.phone);
       setEmail(auth.currentUser.email);
       setAdmin(data.isAdmin);
+      setImageURL(data.imageURL);
     } catch (err) {
       console.error(err.message);
       presentToast({
@@ -91,6 +93,7 @@ const App = () => {
         phone,
         email,
         reAuth,
+        imageURL,
       }}
     >
       <IonApp>
