@@ -16,7 +16,7 @@ import {
 
 function Message({
   uid,
-  profilePic,
+  imageURL,
   displayMessage,
   username,
   time,
@@ -72,6 +72,7 @@ function Message({
       name: username,
       label: label,
       isAdmin: displayStar,
+      imageURL: imageURL,
     };
     console.log(constructedObj);
     try {
@@ -113,7 +114,7 @@ function Message({
         )}
 
         <IonAvatar className="avatarSizes">
-          <img alt="Silhouette of a person's head" src="assets/joenassar.png" />
+          <img src={imageURL} />
         </IonAvatar>
       </div>
 

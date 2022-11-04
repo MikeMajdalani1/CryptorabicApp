@@ -15,14 +15,14 @@ const SignalCard = ({
   risk = 'medium',
   position = 'short',
   entry,
-  adminAvatar,
+  imageURL,
 }) => {
   return (
     <div className="signalCardContainer">
       <div className="singalCardUser">
         <IonAvatar className="avatarSizes ">
           {' '}
-          <img alt="coin" src="assets/joenassar.png" />
+          <img src={imageURL} />
         </IonAvatar>
 
         <div

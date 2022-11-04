@@ -32,8 +32,16 @@ import {
 import { sendSharp, arrowRedoCircleSharp, alertOutline } from 'ionicons/icons';
 
 const Chat = () => {
-  const { user, database, presentToast, fetchUserData, name, label, admin } =
-    useContext(MainContext);
+  const {
+    user,
+    database,
+    presentToast,
+    fetchUserData,
+    name,
+    label,
+    imageURL,
+    admin,
+  } = useContext(MainContext);
 
   const [messages, setMessages] = useState([]);
   const [newMessage, setnewMessage] = useState('');
@@ -129,6 +137,7 @@ const Chat = () => {
           name: name,
           label: label,
           isAdmin: admin,
+          imageURL: imageURL,
         }),
       });
 
@@ -179,6 +188,7 @@ const Chat = () => {
                 <div key={i}>
                   <Message
                     key={i}
+                    imageURL={message.imageURL}
                     uid={message.uid}
                     displayMessage={message.text}
                     time={message.createdAt}

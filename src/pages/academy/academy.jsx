@@ -60,7 +60,7 @@ import {
 import { fetchCoins, formatDate } from '../../utils/functions';
 
 const Academy = () => {
-  const { database, presentToast, fetchUserData, admin } =
+  const { database, presentToast, fetchUserData, imageURL, admin } =
     useContext(MainContext);
 
   const onlyWidth = useWindowWidth();
@@ -268,6 +268,7 @@ const Academy = () => {
     } else {
       try {
         await setDoc(doc(collection(database, 'signals')), {
+          imageURL: imageURL,
           market: SignalInputs.market,
           createdAt: serverTimestamp(),
           stoploss:
@@ -405,6 +406,7 @@ const Academy = () => {
                       </div>
                     ) : null}
                     <SignalCard
+                      imageURL={data.imageURL}
                       market={data.market}
                       tps={data.tps}
                       stoploss={data.stoploss}

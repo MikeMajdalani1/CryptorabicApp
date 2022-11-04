@@ -237,6 +237,8 @@ const Login = () => {
             phone: RegisterInputs.phone,
             label: 'New User',
             isAdmin: false,
+            imageURL:
+              'https://firebasestorage.googleapis.com/v0/b/cryptorabic-app.appspot.com/o/files%2Fuser.png?alt=media&token=21cbeb9e-eecb-40f3-bbde-0888cf8ef90a',
           });
           console.log('Document Created');
         } catch (error) {
