@@ -4,6 +4,7 @@ import {
   setupIonicReact,
   useIonToast,
   useIonAlert,
+  IonSpinner,
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 
@@ -42,7 +43,7 @@ setupIonicReact();
 
 const App = () => {
   const auth = getAuth();
-  const [user] = useAuthState(auth);
+  const [user, loading] = useAuthState(auth);
   const [admin, setAdmin] = useState('');
   const [presentToast] = useIonToast();
   const [name, setName] = useState('');
@@ -79,6 +80,18 @@ const App = () => {
     }
   };
 
+  const loadingScreen = () => {
+    return (
+      <div className="centerPage">
+        <IonSpinner
+          className="spinnerStyles"
+          color="light"
+          name="crescent"
+        ></IonSpinner>
+      </div>
+    );
+  };
+
   return (
     <MainContext.Provider
       value={{
@@ -102,7 +115,11 @@ const App = () => {
           <Route path="/tabs/academy" component={user ? Tabs : Login} />
           <Route path="/tabs/chat" component={user ? Tabs : Login} />
           <Route path="/tabs/profile" component={user ? Tabs : Login} />
-          <Route path="/" component={user ? Tabs : Login} exact />
+          <Route
+            path="/"
+            component={loading ? loadingScreen : user ? Tabs : Login}
+            exact
+          />
         </IonReactRouter>
       </IonApp>
     </MainContext.Provider>

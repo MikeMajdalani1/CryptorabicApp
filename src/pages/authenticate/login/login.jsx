@@ -130,7 +130,8 @@ const Login = () => {
     }
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
     if (LoginInputs.email === '' || LoginInputs.password == '') {
       presentToast({
         message: 'Please enter your email and password',
@@ -167,7 +168,9 @@ const Login = () => {
     }
   };
 
-  const handleRegister = async () => {
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
     if (
       RegisterInputs.username === '' ||
       RegisterInputs.email === '' ||

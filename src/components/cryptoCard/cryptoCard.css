@@ -4,7 +4,7 @@
   padding: 20px;
   background-color: #17394b;
   border-radius: 10px;
-  gap: 20px;
+  gap: 15px;
   width: 220px;
   height: 166px;
   color: white;
@@ -25,8 +25,9 @@
 }
 .cryptoCardName {
   opacity: 0.7;
-  font-size: 11px;
-  word-break: break-all;
+  font-size: 9px;
+  word-wrap: break-word;
+  text-align: left;
 }
 
 .cryptoCardInfoRow {
@@ -39,11 +40,6 @@
 }
 @media (max-width: 446px) {
   .FontSizeMod {
-    font-size: 12px;
-  }
-}
-@media (max-width: 384px) {
-  .FontSizeMod {
-    font-size: 15px;
+    font-size: 11px;
   }
 }

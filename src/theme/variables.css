@@ -38,9 +38,23 @@ ion-skeleton-text {
 .swiper .swiper-slide img {
   width: 40px !important;
 }
-
+.fab-list-side-top {
+  bottom: 63px !important;
+  gap: 8px;
+}
 .native-input[type='date']::-webkit-calendar-picker-indicator {
   filter: invert(1);
+}
+.spinnerStyles {
+  font-size: 40px;
+}
+.splashContainer {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
 }
 /* .ion-input[type='date']::before {
 } */

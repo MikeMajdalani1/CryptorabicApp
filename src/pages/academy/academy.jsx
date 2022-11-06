@@ -19,10 +19,12 @@ import {
   IonTextarea,
   IonSkeletonText,
 } from '@ionic/react';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import CryptoCard from '../../components/cryptoCard/cryptoCard';
-
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import Header from '../../components/header/header';
 import './academy.css';
+import { storage } from '../../utils/firebaseConfig';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper.min.css';
 import '@ionic/react/css/ionic-swiper.css';
@@ -74,7 +76,7 @@ const Academy = () => {
 
   const [isSignalModalOpen, setSignalModalOpen] = useState(false);
   const [isNewslModalOpen, setNewslModalOpen] = useState(false);
-
+  const [isUploadingImage, setisUploadingImage] = useState(false);
   const [SignalInputs, setSignalInputs] = useState({
     market: '',
     stoploss: '',
@@ -123,9 +125,6 @@ const Academy = () => {
       return;
     } else if (onlyWidth > 1200) {
       setnumberOfSlidesCoins(6);
-    } else {
-      setnumberOfSlidesCoins(4);
-      return;
     }
   }, [onlyWidth]);
 
@@ -237,16 +236,23 @@ const Academy = () => {
       });
     } else {
       try {
+        const starsRefDownload = ref(
+          storage,
+          `/files/${NewsInputs.title.replace(' ', '_')}.png`
+        );
+        const imagePath = await getDownloadURL(starsRefDownload);
+
         await setDoc(doc(collection(database, 'news')), {
           title: NewsInputs.title,
           content: NewsInputs.content,
           link: NewsInputs.link,
           createdAt: serverTimestamp(),
+          imageURL: imagePath,
         });
         setNewslModalOpen(false);
         console.log('document created');
       } catch (error) {
-        console.log(error.message);
+        alert(error.message);
         presentToast({
           message: 'An Error has occured, restart the app',
           duration: 2000,
@@ -320,6 +326,46 @@ const Academy = () => {
       });
     }
   };
+
+  const chooseImage = async () => {
+    if (NewsInputs.title !== '') {
+      try {
+        setisUploadingImage(true);
+        const image = await Camera.getPhoto({
+          quality: 90,
+          allowEditing: false,
+          resultType: CameraResultType.Base64,
+          source: CameraSource.Photos,
+        });
+
+        const rawData = atob(image.base64String);
+        const bytes = new Array(rawData.length);
+        for (var x = 0; x < rawData.length; x++) {
+          bytes[x] = rawData.charCodeAt(x);
+        }
+        const arr = new Uint8Array(bytes);
+        const blob = new Blob([arr], { type: 'image/png' });
+
+        const storageRef = ref(
+          storage,
+          `/files/${NewsInputs.title.replace(' ', '_')}.png`
+        );
+
+        await uploadBytesResumable(storageRef, blob);
+        setisUploadingImage(false);
+      } catch (error) {
+        alert(error.message);
+      }
+    } else {
+      presentToast({
+        message: 'Insert a title before uploading image',
+        duration: 1500,
+        icon: alertOutline,
+        cssClass: 'redToast',
+      });
+    }
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -327,14 +373,20 @@ const Academy = () => {
       </IonHeader>
       <IonContent>
         <IonFab horizontal="end" vertical="bottom" slot="fixed">
-          <IonFabButton color="dark">
+          <IonFabButton color="secondary">
             <IonIcon icon={caretUp}></IonIcon>
           </IonFabButton>
           <IonFabList side="top">
-            <IonFabButton color="light">
+            <IonFabButton
+              href="https://tiktok.com/@cryptorabic"
+              color="primary"
+            >
               <IonIcon icon={logoTiktok}></IonIcon>
             </IonFabButton>
-            <IonFabButton color="light">
+            <IonFabButton
+              href="https://instagram.com/cryptorabic"
+              color="primary"
+            >
               <IonIcon icon={logoInstagram}></IonIcon>
             </IonFabButton>
           </IonFabList>
@@ -458,6 +510,7 @@ const Academy = () => {
                     </div>
                   )}
                   <NewsCard
+                    imageURL={data.imageURL}
                     title={data.title}
                     description={data.content}
                     linkURL={data.link}
@@ -687,6 +740,13 @@ const Academy = () => {
                       onIonChange={handleNewsChange}
                     ></IonTextarea>
                   </IonItem>
+                  <IonButton
+                    disabled={isUploadingImage}
+                    size="default"
+                    onClick={chooseImage}
+                  >
+                    {isUploadingImage ? 'Uploading...' : 'Attach Image'}
+                  </IonButton>
                   <IonItem className="border">
                     <IonInput
                       value={NewsInputs.link}
@@ -696,7 +756,11 @@ const Academy = () => {
                     ></IonInput>
                   </IonItem>
 
-                  <IonButton size="large" onClick={handleNewsRegiser}>
+                  <IonButton
+                    disabled={isUploadingImage}
+                    size="large"
+                    onClick={handleNewsRegiser}
+                  >
                     Add News
                   </IonButton>
                 </div>

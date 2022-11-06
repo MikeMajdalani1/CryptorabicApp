@@ -22,13 +22,7 @@ import './profile.css';
 import { doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { useHistory } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
-import {
-  ref,
-  uploadBytesResumable,
-  uploadString,
-  uploadBytes,
-  getDownloadURL,
-} from 'firebase/storage';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
 import { useLocation } from 'react-router-dom';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
@@ -92,10 +86,7 @@ const Profile = () => {
         quality: 90,
         allowEditing: false,
         resultType: CameraResultType.Base64,
-        source: CameraSource.Prompt,
-        promptLabelPhoto: 'Gallery',
-        promptLabelPicture: 'Camera',
-        promptLabelHeader: 'Cancel',
+        source: CameraSource.Photos,
       });
       setPhotoloading(true);
       const rawData = atob(image.base64String);
@@ -118,7 +109,7 @@ const Profile = () => {
           imageURL: imagePath,
         });
 
-        fetchUserData();
+        await fetchUserData();
         setPhotoloading(false);
         presentToast({
           message: 'Image Successfully Updated',
