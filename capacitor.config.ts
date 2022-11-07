@@ -2,27 +2,26 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'cryptorabic.com',
-  appName: 'cryptorabic',
+  appName: 'Cryptorabic',
   webDir: 'build',
   bundledWebRuntime: false,
 
   plugins: {
     SplashScreen: {
-      launchShowDuration: 2000,
+      launchShowDuration: 1000,
       launchAutoHide: true,
       backgroundColor: '#102835',
       androidSplashResourceName: 'splash',
-      androidScaleType: 'CENTER_CROP',
-      showSpinner: true,
-      androidSpinnerStyle: 'large',
-      iosSpinnerStyle: 'small',
-      spinnerColor: '#999999',
       splashFullScreen: true,
       splashImmersive: true,
-      layoutName: 'launch_screen',
-      useDialog: true,
+      showSpinner: false,
+      androidScaleType: 'FIT_XY',
     },
   },
 };
 
 export default config;
+
+// <style name="AppTheme.NoActionBarLaunch" parent="AppTheme.NoActionBar">
+//   <item name="android:background">@drawable/splash</item>
+// </style>;

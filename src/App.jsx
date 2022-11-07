@@ -11,7 +11,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import Login from './pages/authenticate/login/login';
 import Tabs from './tabs';
 import { MainContext } from './utils/Context';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -80,6 +80,11 @@ const App = () => {
     }
   };
 
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     SplashScreen.hide();
+  //   }, 1000);
+  // }, []);
   const loadingScreen = () => {
     return (
       <div className="centerPage">

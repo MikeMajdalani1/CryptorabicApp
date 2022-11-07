@@ -386,7 +386,10 @@ const Login = () => {
                 </div>
               </IonItem>
               <IonLabel class="disclaimer">
-                By creating an account you agree and accept our privacy policy
+                By creating an account you agree and accept our{' '}
+                <a href="https://cryptorabic.com/privacy_policy.pdf">
+                  privacy policy
+                </a>
               </IonLabel>
             </div>
           </div>
