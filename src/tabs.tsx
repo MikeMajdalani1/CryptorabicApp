@@ -1,4 +1,4 @@
-import { Redirect, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import {
   IonApp,
   IonIcon,
@@ -10,7 +10,7 @@ import {
 import { IonReactRouter } from '@ionic/react-router';
 import { chatbubbleEllipses, person, newspaper } from 'ionicons/icons';
 
-import Academy from './pages/academy/academy';
+import Home from './pages/home/home';
 import Chat from './pages/chat/chat';
 import Profile from './pages/profile/profile';
 
@@ -20,16 +20,13 @@ const Tabs: React.FC = () => {
       <IonTabs>
         <IonRouterOutlet>
           {/* <Route path="/tabs/info" component={Info} exact={true} /> */}
-          <Route path="/tabs/academy" component={Academy} exact={true} />
+          <Route path="/tabs/home" component={Home} exact={true} />
           <Route path="/tabs/chat" component={Chat} exact={true} />
           <Route path="/tabs/profile" component={Profile} exact={true} />
-          <Route path="/" component={Academy} exact={true} />
+          <Route path="/" component={Home} exact={true} />
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
-          {/* <IonTabButton tab="Info" href="/tabs/info">
-            <IonIcon icon={newspaper} />
-          </IonTabButton> */}
-          <IonTabButton tab="Academy" href="/tabs/academy">
+          <IonTabButton tab="Home" href="/tabs/home">
             <IonIcon icon={newspaper} />
           </IonTabButton>
           <IonTabButton tab="Chat" href="/tabs/chat">

@@ -18,6 +18,8 @@
 .env.development.local
 .env.test.local
 .env.production.local
+.eslintcache
+.env
 .vscode
 .idea
 
@@ -26,4 +28,3 @@ yarn-debug.log*
 yarn-error.log*
 
 # Optional eslint cache
-.eslintcache

@@ -1,0 +1,91 @@
+h3 {
+  font-weight: 700;
+  font-family: 'Titillium Web', 'Open Sans', 'sans-serif';
+  color: white;
+  letter-spacing: 0.2rem;
+  padding: 0 10px;
+  margin: 0 !important;
+  text-align: center;
+}
+
+h4 {
+  font-family: 'Titillium Web', 'Open Sans', 'sans-serif';
+  font-size: 10px;
+  font-weight: 600;
+  color: #79bcfa;
+  opacity: 0.8;
+  line-height: 16px;
+  letter-spacing: 2px;
+  margin: 0 !important;
+}
+
+.container {
+  padding: 0 40px;
+  text-align: center;
+  margin: 0 auto;
+  width: 100%;
+}
+.login-container {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  align-items: center;
+  justify-content: center;
+}
+.login-container__header,
+.register-container__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.login-container__form {
+  width: 100%;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.login-container__form__forgot-password {
+  font-size: 15px;
+  font-family: 'Titillium Web', 'Open Sans', 'sans-serif';
+  text-decoration: underline;
+  font-weight: 600;
+  color: #79bcfa;
+  opacity: 0.8;
+  line-height: 16px;
+  letter-spacing: 2px;
+}
+.login-container__form__forgot-password:hover {
+  opacity: 1;
+  cursor: pointer;
+}
+.login-container__sign-up {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+@media (max-width: 250px) {
+  .login-container__sign-up {
+    flex-direction: column;
+  }
+}
+
+/* .errorMessage {
+  color: red;
+  font-size: 15px;
+  align-self: flex-start;
+  opacity: 0.6;
+}
+.withError {
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+}
+.autherror {
+  color: red;
+  font-size: 15px;
+  text-align: center;
+  opacity: 0.6;
+} */

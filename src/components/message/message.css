@@ -1,25 +1,36 @@
-.avatarSizes {
+.message-container {
+  gap: 20px !important;
+}
+
+.message-container__profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  gap: 5px;
+}
+
+.message-container__profile__tools {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.message-container__profile__tools__icon {
+  font-size: 20px;
+  color: white;
+}
+.message-container__profile__avatar {
   width: 40px;
   height: 40px;
 }
 
-.mainContainer {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-}
-.reverseRow {
-  flex-direction: row-reverse;
-}
-.justifyEnd {
-  align-items: flex-end;
-}
-.messageContainer {
+.message-container__content {
   display: flex;
   flex-direction: column;
   gap: 10px;
   background-color: #17394b;
-
   border-radius: 10px;
   padding: 10px 20px;
   width: max-content;
@@ -27,73 +38,47 @@
   color: white;
 }
 @media (max-width: 320px) {
-  .messageContainer {
+  .message-container__content {
     max-width: 175px;
   }
 }
 @media (max-width: 275px) {
-  .messageContainer {
+  .message-container__content {
     max-width: 140px;
   }
 }
 @media (min-width: 440px) {
-  .messageContainer {
+  .message-container__content {
     max-width: 300px;
   }
 }
 @media (min-width: 675px) {
-  .messageContainer {
+  .message-container__content {
     max-width: 400px;
   }
 }
 @media (min-width: 1200px) {
-  .messageContainer {
+  .message-container__content {
     max-width: 800px;
   }
 }
-.labelStyles {
+.message-container__content--reversed {
+  align-items: flex-end;
+}
+
+.message-container__content__label {
   opacity: 0.8;
   text-decoration: wavy;
   font-size: 10px;
 }
-
-.displayMessage {
-  line-height: 22px !important;
-}
-.usernameStyles {
-  color: #79bcfa;
-}
-.messageTools {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-/* //background-color: #79bcfa; */
-.flexRow {
-  display: flex;
-
-  align-items: center;
-  gap: 5px;
-}
-.bottomList {
-  height: 20px;
-  width: 100%;
-}
-
-.starIcon {
+.message-container__content__icon {
   color: white;
   font-size: 10px;
 }
-.pinIcon {
-  font-size: 20px;
-  color: white;
-}
 
-.pinandavatar {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 10px;
+.message-container__content__message {
+  line-height: 22px !important;
+}
+.message-container__content__username {
+  color: #79bcfa;
 }

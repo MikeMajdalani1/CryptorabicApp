@@ -21,7 +21,7 @@ ion-card {
   background-color: #17394b;
   border-radius: 10px;
 }
-.checknews {
+.news-card__link {
   color: white;
   opacity: 0.8;
 }

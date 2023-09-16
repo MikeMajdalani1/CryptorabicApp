@@ -14,19 +14,14 @@ import Header from '../../components/header/header';
 import './chat.css';
 import { useState, useEffect, useRef, useContext } from 'react';
 import { MainContext } from '../../utils/Context';
-
+import { sendMessage } from '../../utils/firebase-functions';
 import {
-  serverTimestamp,
   query,
   collection,
   orderBy,
-  setDoc,
-  doc,
   onSnapshot,
   limitToLast,
-  arrayUnion,
   Timestamp,
-  updateDoc,
 } from 'firebase/firestore';
 
 import { sendSharp, arrowRedoCircleSharp, alertOutline } from 'ionicons/icons';
@@ -61,13 +56,7 @@ const Chat = () => {
   useEffect(() => {
     if (database) {
       fetchPinnedMessage();
-      // const q = query(collection(database, 'messages'), orderBy('createdAt'));
-
-      // const unsub = onSnapshot(q, (res) => {
-      //   setMessages(res.docs.map((snap) => snap.data()));
-      // });
       const q = query(collection(database, 'chat'));
-
       const unsub = onSnapshot(q, (res) => {
         setMessages(res.docs.map((snap) => snap.data().messages));
       });
@@ -82,8 +71,8 @@ const Chat = () => {
       setSetopScroll(true);
     }
   }, [messages]);
-  //---------------------------------------------------------------
 
+  //function to fetch pinned message
   const fetchPinnedMessage = async () => {
     try {
       const q = query(
@@ -91,19 +80,18 @@ const Chat = () => {
         orderBy('createdAt'),
         limitToLast(1)
       );
-
       const unsub = onSnapshot(q, (res) => {
-        console.log();
-        setPinnedMessage({
-          text: res.docs[0].data().text,
-          createAt: res.docs[0].data().createAt,
-          name: res.docs[0].data().name,
-        });
+        if (!res.empty) {
+          const data = res.docs[0].data();
+          setPinnedMessage({
+            text: data.text,
+            createAt: data.createAt,
+            name: data.name,
+          });
+        }
       });
-
       return unsub;
     } catch (err) {
-      console.error(err.message);
       setPinnedMessage({
         text: 'Welcome to the Chat!',
         createAt: '',
@@ -111,41 +99,35 @@ const Chat = () => {
       });
     }
   };
+
+  //function to handle input change
   const handleOnChange = (e) => {
     if (e.target.value === '') {
       setnewMessage('');
     }
-
     setnewMessage(e.target.value);
   };
 
-  const sendMessage2 = async (e) => {
+  //function to send a message to the chat
+  const sendMessageInput = async (e) => {
     e.preventDefault();
-
     if (newMessage === '') {
       return;
     }
-    let dataToUpdate = doc(database, 'chat', 'data1');
-
-    try {
-      setnewMessage('');
-      await updateDoc(dataToUpdate, {
-        messages: arrayUnion({
-          text: newMessage.trim(),
-          createdAt: Timestamp.now(),
-          uid: user.uid,
-          name: name,
-          label: label,
-          isAdmin: admin,
-          imageURL: imageURL,
-        }),
-      });
-
-      console.log('Document Created');
-
+    setnewMessage('');
+    const messageData = {
+      text: newMessage.trim(),
+      createdAt: Timestamp.now(),
+      uid: user.uid,
+      name: name,
+      label: label,
+      isAdmin: admin,
+      imageURL: imageURL,
+    };
+    const res = await sendMessage(messageData);
+    if (res.success) {
       bottomListRef.current.scrollIntoView({ behavior: 'smooth' });
-    } catch (error) {
-      console.log(error.message);
+    } else {
       presentToast({
         message: 'An Error has occured, restart the app',
         duration: 2000,
@@ -160,12 +142,12 @@ const Chat = () => {
       <IonHeader>
         <Header />
       </IonHeader>
-      <div className="pinContainer">
+      <div className="pin-container">
         <IonLabel color="primary">Pinned Message</IonLabel>
 
         {pinnedMessage.name ? (
           <>
-            <div className="subPin">
+            <div className="pin-container__content">
               <IonIcon icon={arrowRedoCircleSharp} />
               <IonLabel>
                 <IonLabel color="primary">{pinnedMessage.name}: </IonLabel>{' '}
@@ -181,7 +163,7 @@ const Chat = () => {
         )}
       </div>
       <IonContent>
-        <div className="chatroom">
+        <div className="chatroom_container">
           {messages[0] ? (
             messages[0].map((message, i) => {
               return (
@@ -202,18 +184,18 @@ const Chat = () => {
               );
             })
           ) : (
-            <div className="loaderSpinner">
+            <div className="chatroom_container__spinner">
               <IonSpinner name="crescent"></IonSpinner>
             </div>
           )}
         </div>
-        <div className="bottomList" ref={bottomListRef} />
+        <div className="chatroom_container__bottom" ref={bottomListRef} />
       </IonContent>
 
-      <div className="messageInputContainer">
+      <div className="send-message-container">
         <IonItem>
           <IonInput
-            className="messageInput"
+            className="send-message-container__input"
             name="message"
             value={newMessage}
             placeholder="Enter a message"
@@ -221,10 +203,12 @@ const Chat = () => {
           ></IonInput>
         </IonItem>
 
-        <div onClick={sendMessage2}>
+        <div onClick={sendMessageInput}>
           <IonIcon
             className={
-              newMessage === '' ? 'iconDisbaled sharpIcon' : 'sharpIcon'
+              newMessage === ''
+                ? 'send-message-container__icon--disabled send-message-container__icon'
+                : 'send-message-container__icon'
             }
             icon={sendSharp}
           ></IonIcon>

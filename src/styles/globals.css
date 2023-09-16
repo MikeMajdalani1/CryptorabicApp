@@ -1,0 +1,130 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+ion-toast {
+  --background: #79bcfa;
+}
+ion-skeleton-text {
+  --background: #286ab7;
+  --background-rgb: 40, 106, 183;
+  --border-radius: 20px;
+}
+.ios ion-item {
+  --inner-border-width: 0px !important;
+}
+.alert-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.alert-button-group {
+  justify-content: center !important;
+}
+.alert-message {
+  padding-bottom: 0 !important;
+}
+.swiper .swiper-slide img {
+  width: 40px !important;
+}
+.fab-list-side-top {
+  bottom: 63px !important;
+  gap: 8px;
+}
+.native-input[type='date']::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+.spinner {
+  font-size: 40px;
+}
+.splashContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.reversed-row {
+  flex-direction: row-reverse;
+}
+.seperator {
+  height: 30px;
+}
+.avatar-sizes {
+  width: 40px;
+  height: 40px;
+}
+
+.greenish {
+  color: #2fdf75;
+}
+.redish {
+  color: #ff4961;
+}
+.yellowish {
+  color: #ffc409;
+}
+
+.modal-container {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  padding-bottom: 40px;
+}
+.modal-container__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.modal-container__form {
+  width: 100%;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.modal-container__disclaimer {
+  color: white;
+  font-size: 10px;
+  text-align: center;
+}
+
+.center-page {
+  padding: 0 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  position: absolute;
+  text-align: center;
+  margin: 0 auto;
+  width: 100%;
+  max-height: 600px;
+}
+@media (max-height: 725px) {
+  .center-page {
+    padding: 30px 40px;
+    top: 0;
+    transform: none;
+    position: relative;
+    text-align: center;
+    margin: 0 auto;
+    width: 100%;
+    max-height: fit-content;
+    overflow-y: scroll;
+  }
+}
+
+.blue-border {
+  border: 2px solid #286ab7;
+}
+.redToast {
+  --background: var(--ion-color-danger) !important;
+}

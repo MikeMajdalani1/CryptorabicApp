@@ -1,34 +1,7 @@
-.profilecontainer {
-  width: 80%;
-  margin: 10px auto;
-}
 ion-avatar {
   width: 170px;
   height: 170px;
 }
-.center {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  gap: 30px;
-}
-.detailscontainer {
-  margin-top: 30px;
-  border-radius: 10px;
-  background-color: #17394b;
-  height: fit-content;
-  position: relative;
-}
-
-.detailslist {
-  padding: 25px 30px 30px 30px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 40px;
-}
-
 ion-label {
   font-size: 14px;
   font-weight: 600;
@@ -36,69 +9,90 @@ ion-label {
   text-transform: capitalize;
   font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
 }
-.username {
-  font-size: 25px;
+
+.profile__container {
+  width: 80%;
+  margin: 10px auto;
 }
 
-.deleteButton .button-solid {
-  background: rgb(184, 5, 5) !important;
+.profile__container__image {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
 }
-.ImageContainer {
+.profile__image {
   display: flex;
   flex-direction: column;
   gap: -20px;
   align-items: center;
 }
-
-.UploadIcon {
+.profile__image__upload-icon {
   align-self: flex-end;
   font-size: 30px;
   transform: translateY(-19px) translateX(-7px);
   opacity: 0.9;
 }
-.UploadIcon:hover {
+
+.profile__image__upload-icon:hover {
   opacity: 1;
   cursor: pointer;
 }
-.settingsIcon {
+
+.profile__image__username-label {
+  font-size: 25px;
+}
+
+.profile__form {
+  margin-top: 30px;
+  border-radius: 10px;
+  background-color: #17394b;
+  height: fit-content;
+  position: relative;
+}
+
+.profile__form__list {
+  padding: 25px 30px 30px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+.profile__form__list__settings-icon {
   align-self: flex-end;
   font-size: 20px;
 }
 
-.updateContent {
+.profile__form__list__update-content {
   display: grid;
   gap: 10px;
   grid-template-columns: 6fr 0.5fr;
   align-items: center;
   justify-content: center;
 }
-.updateIcon {
+.profile__form__list__update-icon {
   font-size: 20px;
   align-self: center;
   justify-self: center;
 }
-.nopadding {
+.profile__form__list__update-content--nopadding {
   padding-right: 0 !important;
 }
-.redToast {
-  --background: var(--ion-color-danger) !important;
-}
-.guides {
+
+.profile__form__list__guides {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
-.guidesItem {
+.profile__form__list__guides__items {
   display: flex;
   gap: 10px;
   align-items: center;
   justify-content: flex-start;
   opacity: 0.8;
 }
-.guidesIcon {
+.profile__form__list__guides__icon {
   font-size: 20px;
   opacity: 1 !important;
-}
-.skeletonForName {
-  width: 70%;
 }

@@ -1,47 +1,27 @@
-.chatroom {
-  padding: 10px 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-.messageInput {
-  border-radius: 20px;
-}
-.messageInputContainer {
-  padding: 5px 20px;
-  box-shadow: 0 0 3rem #286ab7;
-  border-top: 0.2rem inset #286ab7;
-  display: grid;
-  gap: 10px;
-  grid-template-columns: 6fr 0.5fr;
-  align-items: center;
-  justify-content: center;
-}
-.sharpIcon {
-  font-size: 20px;
-  color: white;
-}
-.iconDisbaled {
-  opacity: 0.5;
-}
-.pinContainer {
+.pin-container {
   padding: 15px 20px;
   box-shadow: 0 0 3rem #286ab7;
   border-bottom: 0.2rem outset #286ab7;
-
   color: white;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
-.subPin {
+.pin-container__content {
   opacity: 0.8;
   display: flex;
   flex-direction: row;
   gap: 10px;
   align-items: center;
 }
-.loaderSpinner {
+
+.chatroom_container {
+  padding: 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.chatroom_container__spinner {
   text-align: center;
   width: 100%;
   min-height: 60vh;
@@ -51,8 +31,33 @@
   align-items: center;
   text-align: center;
 }
+.chatroom_container__bottom {
+  height: 20px;
+  width: 100%;
+}
 
 ion-spinner {
   width: 2.7em;
   height: 2.7em;
+}
+
+.send-message-container {
+  padding: 5px 20px;
+  box-shadow: 0 0 3rem #286ab7;
+  border-top: 0.2rem inset #286ab7;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 6fr 0.5fr;
+  align-items: center;
+  justify-content: center;
+}
+.send-message-container__input {
+  border-radius: 20px;
+}
+.send-message-container__icon--disabled {
+  opacity: 0.5;
+}
+.send-message-container__icon {
+  font-size: 20px;
+  color: white;
 }

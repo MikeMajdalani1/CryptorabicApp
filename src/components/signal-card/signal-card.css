@@ -1,4 +1,4 @@
-.signalCardContainer {
+.signal-card {
   padding: 20px;
   background-color: #17394b;
   border-radius: 10px;
@@ -12,101 +12,78 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
 }
-
-.singalCardInfo {
+.signal-card__user {
   display: flex;
   flex-direction: column;
   gap: 15px;
   align-items: center;
 }
-.singalCardRate {
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-}
-.singalCardRisk {
+.signal-card__position {
   display: flex;
   flex-direction: row;
   gap: 10px;
+  align-items: center;
 }
-.singalCardUser {
+.signal-card__info {
   display: flex;
   flex-direction: column;
   gap: 15px;
   align-items: center;
 }
-.singalCardposition {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-}
-.singalCardTPs {
-  display: flex;
-  gap: 12px;
-  flex-direction: column;
-}
-.singalCardTP {
-  opacity: 0.8;
-}
-.fixLineHeight {
+.signal-card__info__label {
   line-height: 20px;
   text-align: center;
 }
 
-.greenish {
-  color: #2fdf75;
+.signal-card__tps {
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
 }
-.redish {
-  color: #ff4961;
-}
-.yellowish {
-  color: #ffc409;
+.signal-card__tps__label {
+  opacity: 0.8;
 }
 
 @media (max-width: 360px) {
-  .signalCardContainer {
+  .signal-card {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     height: 100%;
   }
-  .singalCardTPs {
+  .signal-card__tps {
     grid-column: 1/-1;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(auto);
   }
-  .singalCardInfo {
+  .signal-card__info {
     align-items: center;
   }
-  .fixLineHeight {
+  .signal-card__info__label {
     text-align: center;
-  }
-  .singalCardRate {
-    align-items: center;
   }
 }
 @media (max-width: 270px) {
-  .signalCardContainer {
+  .signal-card {
     grid-template-columns: auto;
     height: 100%;
   }
-  .singalCardTPs {
+  .signal-card__tps {
     grid-template-columns: repeat(2, 1fr);
   }
-  .singalCardInfo {
+  .signal-card__info {
     gap: 10px;
   }
 }
 
 @media (min-width: 423px) {
-  .signalCardContainer {
+  .signal-card {
     align-items: flex-start;
   }
 }
 
 @media (min-width: 640px) {
-  .signalCardContainer {
+  .signal-card {
     height: 170px;
   }
 }

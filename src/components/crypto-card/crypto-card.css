@@ -1,4 +1,4 @@
-.cryptoCardContainer {
+.crypto-card {
   display: flex;
   flex-direction: column;
   padding: 20px;
@@ -9,37 +9,37 @@
   height: 166px;
   color: white;
 }
-.cryptoCardLogoAndImage {
+.crypto-card__header {
   display: flex;
   gap: 11px;
   align-items: center;
 }
-.cryptoCardCoinID {
+.crypto-card__header__content {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
 }
-.cryptoCardAbbrev {
+.crypto-card__header__content__abbrevation {
   text-transform: uppercase;
 }
-.cryptoCardName {
+.crypto-card__header__content__name {
   opacity: 0.7;
   font-size: 9px;
   word-wrap: break-word;
   text-align: left;
 }
 
-.cryptoCardInfoRow {
+.crypto-card__info {
   font-size: 12px !important;
   display: flex;
   justify-content: space-between;
 }
-.FontSizeMod {
+.crypto-card__info__label {
   font-size: 14px;
 }
 @media (max-width: 446px) {
-  .FontSizeMod {
+  .crypto-card__info__label {
     font-size: 11px;
   }
 }

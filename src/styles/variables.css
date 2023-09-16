@@ -6,58 +6,6 @@ http://ionicframework.com/docs/theming/ */
 @import url('https://fonts.googleapis.com/css2?family=Coiny&family=Karla&family=Open+Sans:wght@400;500;600&family=Roboto&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Titillium+Web&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Coiny&family=Karla&family=Open+Sans:wght@400;500;600&family=Roboto&display=swap');
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-ion-toast {
-  --background: #79bcfa;
-}
-ion-skeleton-text {
-  --background: #286ab7;
-  --background-rgb: 40, 106, 183;
-  --border-radius: 20px;
-}
-.ios ion-item {
-  --inner-border-width: 0px !important;
-}
-.alert-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.alert-button-group {
-  justify-content: center !important;
-}
-.alert-message {
-  padding-bottom: 0 !important;
-}
-.swiper .swiper-slide img {
-  width: 40px !important;
-}
-.fab-list-side-top {
-  bottom: 63px !important;
-  gap: 8px;
-}
-.native-input[type='date']::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-}
-.spinnerStyles {
-  font-size: 40px;
-}
-.splashContainer {
-  display: flex;
-  flex-direction: column;
-
-  align-items: center;
-
-  justify-content: center;
-}
-/* .ion-input[type='date']::before {
-} */
 
 /** Ionic CSS Variables **/
 :root {
@@ -140,7 +88,4 @@ ion-skeleton-text {
   --ion-color-light-contrast-rgb: 0, 0, 0;
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
-}
-
-@media (prefers-color-scheme: dark) {
 }

@@ -8,7 +8,7 @@ import {
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 
-import Login from './pages/authenticate/login/login';
+import Authenticate from './pages/authenticate/authenticate';
 import Tabs from './tabs';
 import { MainContext } from './utils/Context';
 import { useEffect, useState } from 'react';
@@ -30,7 +30,8 @@ import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 
 /* Theme variables */
-import './theme/variables.css';
+import './styles/globals.css';
+import './styles/variables.css';
 
 /* Global imports */
 import { getAuth } from 'firebase/auth';
@@ -38,6 +39,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { database } from './utils/firebaseConfig';
 import { query, collection, getDocs, where } from 'firebase/firestore';
 import { alertOutline } from 'ionicons/icons';
+import loadingScreen from './components/loading-screen/loading-screen';
 
 setupIonicReact();
 
@@ -80,23 +82,6 @@ const App = () => {
     }
   };
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     SplashScreen.hide();
-  //   }, 1000);
-  // }, []);
-  const loadingScreen = () => {
-    return (
-      <div className="centerPage">
-        <IonSpinner
-          className="spinnerStyles"
-          color="light"
-          name="crescent"
-        ></IonSpinner>
-      </div>
-    );
-  };
-
   return (
     <MainContext.Provider
       value={{
@@ -116,13 +101,13 @@ const App = () => {
     >
       <IonApp>
         <IonReactRouter>
-          <Route path="/tabs" component={user ? Tabs : Login} exact />
-          <Route path="/tabs/academy" component={user ? Tabs : Login} />
-          <Route path="/tabs/chat" component={user ? Tabs : Login} />
-          <Route path="/tabs/profile" component={user ? Tabs : Login} />
+          <Route path="/tabs" component={user ? Tabs : Authenticate} exact />
+          <Route path="/tabs/home" component={user ? Tabs : Authenticate} />
+          <Route path="/tabs/chat" component={user ? Tabs : Authenticate} />
+          <Route path="/tabs/profile" component={user ? Tabs : Authenticate} />
           <Route
             path="/"
-            component={loading ? loadingScreen : user ? Tabs : Login}
+            component={loading ? loadingScreen : user ? Tabs : Authenticate}
             exact
           />
         </IonReactRouter>

@@ -1,28 +1,13 @@
 import {
-  IonContent,
-  IonPage,
-  IonSpinner,
   IonCard,
   IonCardContent,
   IonCardTitle,
   IonCardHeader,
 } from '@ionic/react';
-import { formatRelative } from 'date-fns';
-import './newsCard.css';
+import { formatDate } from '../../utils/functions';
+import './news-card.css';
 
 const NewsCard = ({ imageURL, title, description, linkURL, createdAt }) => {
-  const formatDate = (date) => {
-    let formattedDate = '';
-    if (date) {
-      // Convert the date in words relative to the current date
-      formattedDate = formatRelative(date, new Date());
-      // Uppercase the first letter
-      formattedDate =
-        formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
-    }
-    return formattedDate;
-  };
-
   return (
     <IonCard>
       {imageURL && <img src={imageURL} />}
@@ -35,7 +20,7 @@ const NewsCard = ({ imageURL, title, description, linkURL, createdAt }) => {
         <br />
         {linkURL && (
           <div>
-            <div className="checknews">Link:</div>
+            <div className="news-card__link">Link:</div>
             <a href={linkURL}>{linkURL}</a>
           </div>
         )}
